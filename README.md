@@ -7,13 +7,14 @@ focus of this package is interoperability with TCF (Text Corpus Format).
 However, the majority of the utilities are also useful outside TCF. The
 package contains the following programs:
 
-* conll-cleanup: replace most Unicode punctuation characters by
-                 by ASCII equivalents.
-* conll-cycle: find dependency trees with (non-self) cycles.
-* conll-expandmorph: expand morphology features in TüBa-D/Z.
-* conll-merge: merge CoNLL-X files.
-* conll-partition: partition a CoNLL-X file in N files.
-* conll-sample: take a random sample from a CoNLL-X file.
+* conllx-cleanup: replace most Unicode punctuation characters by
+                  by ASCII equivalents.
+* conllx-cycle: find dependency trees with (non-self) cycles.
+* conllx-expandmorph: expand morphology features in TüBa-D/Z.
+* conllx-grep: print sentences that have a token matching a pattern.
+* conllx-merge: merge CoNLL-X files.
+* conllx-partition: partition a CoNLL-X file in N files.
+* conllx-sample: take a random sample from a CoNLL-X file.
 
 ## Download
 
