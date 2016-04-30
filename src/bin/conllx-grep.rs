@@ -5,8 +5,8 @@ extern crate regex;
 
 use std::env::args;
 
-use conllx::{Sentence, Token, WriteSentence};
-use conllx_utils::{or_exit, or_stdin, or_stdout};
+use conllx::{Sentence, WriteSentence};
+use conllx_utils::{LAYER_CALLBACKS, LayerCallback, or_exit, or_stdin, or_stdout};
 use getopts::Options;
 use regex::Regex;
 use std::process;
@@ -17,16 +17,6 @@ fn print_usage(program: &str, opts: Options) {
     print!("{}", opts.usage(&brief));
 }
 
-type LayerCallback = fn(&Token) -> &Option<String>;
-
-fn form(t: &Token) -> &Option<String> {
-    t.form()
-}
-
-fn lemma(t: &Token) -> &Option<String> {
-    t.lemma()
-}
-
 fn main() {
     let args: Vec<String> = args().collect();
     let program = args[0].clone();
@@ -35,7 +25,7 @@ fn main() {
     opts.optflag("h", "help", "print this help menu");
     opts.optopt("l",
                 "layer",
-                "layer: form or lemma (default: form)",
+                "layer: form, lemma, cpos, pos, headrel, or pheadrel (default: form)",
                 "LAYER");
     let matches = or_exit(opts.parse(&args[1..]));
 
@@ -44,7 +34,15 @@ fn main() {
         return;
     }
 
-    let callback = layer_callback(matches.opt_str("l"));
+    let callback = matches.opt_str("l").as_ref().map(|layer| {
+        match LAYER_CALLBACKS.get(layer.as_str()) {
+            Some(c) => c,
+            None    => {
+                println!("Unknown layer: {}", layer);
+                process::exit(1)
+            }
+        }
+    }).unwrap_or(&LAYER_CALLBACKS["form"]);
 
     if matches.free.len() == 0 || matches.free.len() > 3 {
         print_usage(&program, opts);
@@ -63,19 +61,7 @@ fn main() {
     }
 }
 
-fn layer_callback(layer: Option<String>) -> LayerCallback {
-    match layer.as_ref().map(String::as_ref) {
-        Some("form") => form,
-        Some("lemma") => lemma,
-        Some(l) => {
-            println!("Unknown layer: {}", l);
-            process::exit(1)
-        }
-        None => form,
-    }
-}
-
-fn match_sentence(re: &Regex, callback: LayerCallback, sentence: &Sentence) -> bool {
+fn match_sentence(re: &Regex, callback: &LayerCallback, sentence: &Sentence) -> bool {
     for token in sentence {
         match callback(token).as_ref() {
             Some(token) => {
