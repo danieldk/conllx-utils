@@ -91,7 +91,7 @@ pub fn simplify_unicode_punct(c: char) -> Conversion {
     }
 }
 
-pub fn simplify_unicode(s: &String) -> String {
+pub fn simplify_unicode(s: &str) -> String {
     s.chars().fold(String::with_capacity(s.len()), |mut s, c| {
         match simplify_unicode_punct(c) {
             Conversion::Char(c) => s.push(c),

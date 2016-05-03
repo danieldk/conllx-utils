@@ -54,8 +54,8 @@ fn check_cycles(sentence: &Sentence, projective: bool) {
         };
 
         match head {
-            &Some(head) => Some((node_index(head), node_index(idx + 1))),
-            &None => None,
+            Some(head) => Some((node_index(head), node_index(idx + 1))),
+            None => None,
         }
     });
 

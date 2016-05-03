@@ -128,8 +128,8 @@ pub fn expand_tdz_morph(token: &mut Token) -> Result<(), MorphError> {
 }
 
 fn expand_features(token: &Token) -> Result<Option<String>, MorphError> {
-    let tag: &str = match token.pos().as_ref() {
-        Some(tag) => tag.as_ref(),
+    let tag: &str = match token.pos() {
+        Some(tag) => tag,
         None => return Ok(None),
     };
 

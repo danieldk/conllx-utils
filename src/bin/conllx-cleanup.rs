@@ -42,8 +42,7 @@ fn main() {
 
 fn cleanup(sentence: &mut Sentence) {
     for token in sentence {
-        if let Some(form) = token.form().clone() {
-            token.set_form(Some(simplify_unicode(&form)))
-        };
+        let clean_form = token.form().map(simplify_unicode);
+        token.set_form(clean_form);
     }
 }

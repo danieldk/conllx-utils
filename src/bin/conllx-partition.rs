@@ -40,14 +40,11 @@ fn main() {
     let reader = conllx::Reader::new(or_stdin(matches.free.get(3)));
 
     let writers: Vec<_> = (0..n)
-                              .map(|part| {
-                                  let file = or_exit(File::create(format!("{}{}{}",
-                                                                          prefix,
-                                                                          part,
-                                                                          suffix)));
-                                  conllx::Writer::new(BufWriter::new(file))
-                              })
-                              .collect();
+        .map(|part| {
+            let file = or_exit(File::create(format!("{}{}{}", prefix, part, suffix)));
+            conllx::Writer::new(BufWriter::new(file))
+        })
+        .collect();
 
 
     let writer = PartitioningWriter::new(writers);
