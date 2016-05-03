@@ -1,4 +1,4 @@
-use conllx::Token;
+use conllx::{Features, Token};
 use std::collections::HashMap;
 
 pub type LayerCallback = fn(&Token) -> Option<&str>;
@@ -8,6 +8,7 @@ lazy_static! {
         {
             let mut m: HashMap<&'static str, LayerCallback> = HashMap::new();
             m.insert("cpos", cpos);
+            m.insert("features", features);
             m.insert("form", form);
             m.insert("headrel", head_rel);
             m.insert("pheadrel", p_head_rel);
@@ -19,6 +20,10 @@ lazy_static! {
 
 fn cpos(t: &Token) -> Option<&str> {
     t.cpos()
+}
+
+fn features(t: &Token) -> Option<&str> {
+    t.features().as_ref().map(Features::as_str)
 }
 
 fn form(t: &Token) -> Option<&str> {
