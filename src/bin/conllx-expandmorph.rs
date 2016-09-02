@@ -19,6 +19,7 @@ fn main() {
 
     let mut opts = Options::new();
     opts.optflag("h", "help", "print this help menu");
+    opts.optflag("n", "no-preserve", "do not preserve original TüBa morph tag");
     let matches = or_exit(opts.parse(&args[1..]));
 
     if matches.opt_present("h") {
@@ -35,13 +36,13 @@ fn main() {
     let mut writer = conllx::Writer::new(or_stdout(matches.free.get(1)));
     for sentence in reader.sentences() {
         let mut sentence = or_exit(sentence);
-        expand(&mut sentence);
+        expand(&mut sentence, !matches.opt_present("n"));
         or_exit(writer.write_sentence(&sentence))
     }
 }
 
-fn expand(sentence: &mut Sentence) {
+fn expand(sentence: &mut Sentence, preserve_orig: bool) {
     for token in sentence {
-        or_exit(expand_tdz_morph(token))
+        or_exit(expand_tdz_morph(token, preserve_orig))
     }
 }

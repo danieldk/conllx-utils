@@ -118,8 +118,8 @@ impl fmt::Display for MorphError {
     }
 }
 
-pub fn expand_tdz_morph(token: &mut Token) -> Result<(), MorphError> {
-    let expanded_features = try!(expand_features(token));
+pub fn expand_tdz_morph(token: &mut Token, preserve_orig: bool) -> Result<(), MorphError> {
+    let expanded_features = try!(expand_features(token, preserve_orig));
     if expanded_features.is_some() {
         token.set_features(expanded_features);
     };
@@ -127,7 +127,7 @@ pub fn expand_tdz_morph(token: &mut Token) -> Result<(), MorphError> {
     Ok(())
 }
 
-fn expand_features(token: &Token) -> Result<Option<String>, MorphError> {
+fn expand_features(token: &Token, preserve_orig: bool) -> Result<Option<String>, MorphError> {
     let tag: &str = match token.pos() {
         Some(tag) => tag,
         None => return Ok(None),
@@ -166,7 +166,9 @@ fn expand_features(token: &Token) -> Result<Option<String>, MorphError> {
     }
 
     // Add feature with the original morphological tag.
-    features.push(format!("morph:{}", morph));
+    if preserve_orig {
+        features.push(format!("morph:{}", morph));
+    }
 
     Ok(Some(features.join("|")))
 }
