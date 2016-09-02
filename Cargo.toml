@@ -4,7 +4,7 @@ version = "0.2.0"
 authors = ["Daniël de Kok <me@danieldk.eu>"]
 
 [dependencies]
-conllx = "0.2"
+conllx = "0.3"
 itertools = "0.4"
 lazy_static = "0.2"
 maplit = "0.1"

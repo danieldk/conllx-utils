@@ -23,7 +23,7 @@ fn cpos(t: &Token) -> Option<&str> {
 }
 
 fn features(t: &Token) -> Option<&str> {
-    t.features().as_ref().map(Features::as_str)
+    t.features().map(Features::as_str)
 }
 
 fn form(t: &Token) -> Option<&str> {
