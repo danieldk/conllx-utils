@@ -1,7 +1,24 @@
 use std::fmt;
 use std::fs;
+use std::fs::File;
+use std::path::{Path, PathBuf};
 use std::io;
+use std::io::{BufRead, BufReader};
 use std::process;
+
+pub enum Input {
+    Stdin(io::Stdin),
+    File(PathBuf),
+}
+
+impl<'a> Input {
+    pub fn buf_read(&'a self) -> io::Result<Box<BufRead + 'a>> {
+        match self {
+            &Input::Stdin(ref stdin) => Result::Ok(Box::new(stdin.lock())),
+            &Input::File(ref path) => Result::Ok(Box::new(BufReader::new(try!(File::open(path))))),
+        }
+    }
+}
 
 pub fn or_exit<T, E: fmt::Display>(r: Result<T, E>) -> T {
     r.unwrap_or_else(|e: E| -> T {
@@ -10,13 +27,12 @@ pub fn or_exit<T, E: fmt::Display>(r: Result<T, E>) -> T {
     })
 }
 
-pub fn or_stdin(filename: Option<&String>) -> Box<io::BufRead> {
+pub fn or_stdin(filename: Option<&String>) -> Input {
     match filename {
         Some(n) => {
-            let file = or_exit(fs::File::open(n));
-            Box::new(io::BufReader::new(file))
+            Input::File(Path::new(n).to_owned())
         }
-        None => Box::new(io::BufReader::new(io::stdin())),
+        None => Input::Stdin(io::stdin()),
     }
 }
 

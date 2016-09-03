@@ -37,7 +37,8 @@ fn main() {
     let prefix = &matches.free[1];
     let suffix = &matches.free[2];
 
-    let reader = conllx::Reader::new(or_stdin(matches.free.get(3)));
+    let input = or_stdin(matches.free.get(1));
+    let reader = conllx::Reader::new(or_exit(input.buf_read()));
 
     let writers: Vec<_> = (0..n)
         .map(|part| {

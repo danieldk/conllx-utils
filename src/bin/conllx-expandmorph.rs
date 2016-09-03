@@ -32,7 +32,8 @@ fn main() {
         return;
     }
 
-    let reader = conllx::Reader::new(or_stdin(matches.free.get(0)));
+    let input = or_stdin(matches.free.get(1));
+    let reader = conllx::Reader::new(or_exit(input.buf_read()));
     let mut writer = conllx::Writer::new(or_stdout(matches.free.get(1)));
     for sentence in reader.sentences() {
         let mut sentence = or_exit(sentence);

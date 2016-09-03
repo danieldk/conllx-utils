@@ -38,7 +38,8 @@ fn main() {
         return;
     }
 
-    let reader = conllx::Reader::new(or_stdin(matches.free.get(0)));
+    let input = or_stdin(matches.free.get(1));
+    let reader = conllx::Reader::new(or_exit(input.buf_read()));
     for sentence in reader.sentences() {
         let sentence = or_exit(sentence);
         check_cycles(&sentence, matches.opt_present("p"))

@@ -35,7 +35,9 @@ fn main() {
     }
 
     let sample_size = or_exit(matches.free[0].parse());
-    let reader = conllx::Reader::new(or_stdin(matches.free.get(1)));
+
+    let input = or_stdin(matches.free.get(1));
+    let reader = conllx::Reader::new(or_exit(input.buf_read()));
     let mut writer = conllx::Writer::new(or_stdout(matches.free.get(2)));
 
     let mut rng = rand::weak_rng();
