@@ -38,7 +38,9 @@ fn main() {
 
     let input = or_stdin(matches.free.get(1));
     let reader = conllx::Reader::new(or_exit(input.buf_read()));
-    let mut writer = conllx::Writer::new(or_stdout(matches.free.get(2)));
+
+    let output = or_stdout(matches.free.get(2));
+    let mut writer = conllx::Writer::new(or_exit(output.buf_write()));
 
     let mut rng = rand::weak_rng();
     let sample = reservoir::sample(&mut rng,

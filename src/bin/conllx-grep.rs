@@ -54,9 +54,10 @@ fn main() {
 
     let re = or_exit(Regex::new(&matches.free[0]));
     let input = or_stdin(matches.free.get(1));
-
     let reader = conllx::Reader::new(or_exit(input.buf_read()));
-    let mut writer = conllx::Writer::new(or_stdout(matches.free.get(2)));
+
+    let output = or_stdout(matches.free.get(2));
+    let mut writer = conllx::Writer::new(or_exit(output.buf_write()));
     for sentence in reader.sentences() {
         let sentence = or_exit(sentence);
         if match_sentence(&re, callback, &sentence) {

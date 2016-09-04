@@ -34,7 +34,8 @@ fn main() {
         return;
     }
 
-    let mut writer = conllx::Writer::new(or_stdout(matches.opt_str("w").as_ref()));
+    let output = or_stdout(matches.opt_str("w").as_ref());
+    let mut writer = conllx::Writer::new(or_exit(output.buf_write()));
 
     copy_sents(&mut writer, &matches.free)
 }
