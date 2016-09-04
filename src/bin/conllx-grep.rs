@@ -34,15 +34,18 @@ fn main() {
         return;
     }
 
-    let callback = matches.opt_str("l").as_ref().map(|layer| {
-        match LAYER_CALLBACKS.get(layer.as_str()) {
-            Some(c) => c,
-            None    => {
-                println!("Unknown layer: {}", layer);
-                process::exit(1)
+    let callback = matches.opt_str("l")
+        .as_ref()
+        .map(|layer| {
+            match LAYER_CALLBACKS.get(layer.as_str()) {
+                Some(c) => c,
+                None => {
+                    println!("Unknown layer: {}", layer);
+                    process::exit(1)
+                }
             }
-        }
-    }).unwrap_or(&LAYER_CALLBACKS["form"]);
+        })
+        .unwrap_or(&LAYER_CALLBACKS["form"]);
 
     if matches.free.len() == 0 || matches.free.len() > 3 {
         print_usage(&program, opts);
