@@ -1,4 +1,4 @@
-use conllx::Token;
+use conllx::{Features, Token};
 use std::collections::HashMap;
 use std::fmt;
 
@@ -127,7 +127,7 @@ pub fn expand_tdz_morph(token: &mut Token, preserve_orig: bool) -> Result<(), Mo
     Ok(())
 }
 
-fn expand_features(token: &Token, preserve_orig: bool) -> Result<Option<String>, MorphError> {
+fn expand_features(token: &Token, preserve_orig: bool) -> Result<Option<Features>, MorphError> {
     let tag: &str = match token.pos() {
         Some(tag) => tag,
         None => return Ok(None),
@@ -170,5 +170,5 @@ fn expand_features(token: &Token, preserve_orig: bool) -> Result<Option<String>,
         features.push(format!("morph:{}", morph));
     }
 
-    Ok(Some(features.join("|")))
+    Ok(Some(Features::from_string(features.join("|"))))
 }

@@ -4,7 +4,7 @@ version = "0.2.1"
 authors = ["Daniël de Kok <me@danieldk.eu>"]
 
 [dependencies]
-conllx = "0.3"
+conllx = "0.4"
 flate2 = "0.2"
 itertools = "0.4"
 lazy_static = "0.2"
