@@ -36,13 +36,11 @@ fn main() {
 
     let callback = matches.opt_str("l")
         .as_ref()
-        .map(|layer| {
-            match LAYER_CALLBACKS.get(layer.as_str()) {
-                Some(c) => c,
-                None => {
-                    println!("Unknown layer: {}", layer);
-                    process::exit(1)
-                }
+        .map(|layer| match LAYER_CALLBACKS.get(layer.as_str()) {
+            Some(c) => c,
+            None => {
+                println!("Unknown layer: {}", layer);
+                process::exit(1)
             }
         })
         .unwrap_or(&LAYER_CALLBACKS["form"]);
