@@ -48,7 +48,7 @@ fn copy_sents<W>(writer: &mut conllx::Writer<W>, filenames: &Vec<String>)
         let buf_read = Box::new(BufReader::new(file));
 
         let reader = conllx::Reader::new(buf_read);
-        for sentence in reader.sentences() {
+        for sentence in reader {
             let sentence = or_exit(sentence);
             or_exit(writer.write_sentence(&sentence))
         }

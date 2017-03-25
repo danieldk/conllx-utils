@@ -73,7 +73,7 @@ fn copy_sents<R, W>(reader: conllx::Reader<R>, mut writer: W)
     where R: BufRead,
           W: WriteSentence
 {
-    for sentence in reader.sentences() {
+    for sentence in reader {
         let sentence = or_exit(sentence);
         or_exit(writer.write_sentence(&sentence))
     }

@@ -36,7 +36,7 @@ fn main() {
 
     let output = or_stdout(matches.free.get(1));
     let mut writer = conllx::Writer::new(or_exit(output.buf_write()));
-    for sentence in reader.sentences() {
+    for sentence in reader {
         let mut sentence = or_exit(sentence);
         cleanup(&mut sentence);
         or_exit(writer.write_sentence(&sentence))

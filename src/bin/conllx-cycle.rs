@@ -40,7 +40,7 @@ fn main() {
 
     let input = or_stdin(matches.free.get(0));
     let reader = conllx::Reader::new(or_exit(input.buf_read()));
-    for sentence in reader.sentences() {
+    for sentence in reader {
         let sentence = or_exit(sentence);
         check_cycles(&sentence, matches.opt_present("p"))
     }

@@ -58,7 +58,7 @@ fn main() {
 
     let output = or_stdout(matches.free.get(2));
     let mut writer = conllx::Writer::new(or_exit(output.buf_write()));
-    for sentence in reader.sentences() {
+    for sentence in reader {
         let sentence = or_exit(sentence);
         if match_sentence(&re, callback, &sentence) {
             or_exit(writer.write_sentence(&sentence))

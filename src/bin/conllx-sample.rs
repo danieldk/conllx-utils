@@ -6,7 +6,7 @@ extern crate reservoir;
 
 use std::env::args;
 
-use conllx::WriteSentence;
+use conllx::{ReadSentence, WriteSentence};
 use conllx_utils::{or_exit, or_stdin, or_stdout};
 use getopts::Options;
 

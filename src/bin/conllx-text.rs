@@ -41,7 +41,7 @@ fn main() {
     let output = or_stdout(matches.free.get(1));
     let mut writer = or_exit(output.buf_write());
 
-    for sentence in reader.sentences() {
+    for sentence in reader {
         let sentence = or_exit(sentence);
 
         let mut layer_f: Box<FnMut(&Token) -> &str> = if matches.opt_present("l") {
