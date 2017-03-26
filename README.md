@@ -10,11 +10,12 @@ package contains the following programs:
 * conllx-cleanup: replace most Unicode punctuation characters by
                   by ASCII equivalents.
 * conllx-cycle: find dependency trees with (non-self) cycles.
-* conllx-expandmorph: expand morphology features in TüBa-D/Z.
+* conllx-tdz-expandmorph: expand morphology features in TüBa-D/Z.
 * conllx-grep: print sentences that have a token matching a pattern.
 * conllx-merge: merge CoNLL-X files.
 * conllx-partition: partition a CoNLL-X file in N files.
 * conllx-sample: take a random sample from a CoNLL-X file.
+* conllx-text: convert CoNLL-X file to plain text.
 
 ## Download
 
