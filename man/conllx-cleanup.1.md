@@ -1,5 +1,5 @@
 % CONLLX-CLEANUP(1)
-% Daniël de Kok
+% Daniel de Kok
 % Sep 21, 2016
 
 NAME
@@ -33,3 +33,4 @@ conllx-merge(1),
 conllx-partition(1),
 conllx-sample(1),
 conllx-tdz-expandmorph(1)
+conllx-text(1)
