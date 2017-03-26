@@ -9,6 +9,7 @@ package contains the following programs:
 
 * conllx-cleanup: replace most Unicode punctuation characters by
                   by ASCII equivalents.
+* conllx-compare: compare sentences on particular columns.
 * conllx-cycle: find dependency trees with (non-self) cycles.
 * conllx-tdz-expandmorph: expand morphology features in TüBa-D/Z.
 * conllx-grep: print sentences that have a token matching a pattern.

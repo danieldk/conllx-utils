@@ -5,6 +5,7 @@ authors = ["Daniël de Kok <me@danieldk.eu>"]
 
 [dependencies]
 conllx = "0.4"
+colored = "1.4"
 flate2 = "0.2"
 itertools = "0.4"
 lazy_static = "0.2"

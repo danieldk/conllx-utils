@@ -32,6 +32,7 @@ SEE ALSO
 ========
 
 conllx-cleanup(1),
+conllx-compare(1),
 conllx-grep(1),
 conllx-merge(1),
 conllx-partition(1),

@@ -27,6 +27,7 @@ write to the standard output.
 SEE ALSO
 ========
 
+conllx-compare(1),
 conllx-cycle(1),
 conllx-grep(1),
 conllx-merge(1),
