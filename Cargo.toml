@@ -4,14 +4,14 @@ version = "0.2.1"
 authors = ["Daniël de Kok <me@danieldk.eu>"]
 
 [dependencies]
-conllx = "0.4"
+conllx = "0.5"
 colored = "1.4"
 flate2 = "0.2"
-itertools = "0.4"
+itertools = "0.5"
 lazy_static = "0.2"
 maplit = "0.1"
-petgraph = "0.2"
+petgraph = "0.4"
 getopts = "0.2"
 reservoir = "0.2"
 rand = "0.3"
-regex = "0.1"
+regex = "0.2"

@@ -12,7 +12,7 @@ use getopts::Options;
 use itertools::Itertools;
 use petgraph::{Directed, Graph};
 use petgraph::graph::node_index;
-use petgraph::algo::scc;
+use petgraph::algo::kosaraju_scc;
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} [options] FILE", program);
@@ -63,7 +63,7 @@ fn check_cycles(sentence: &Sentence, projective: bool) {
     let dep_graph = Graph::<(), (), Directed>::from_edges(edges);
     let mut sentence_printed = false;
 
-    for component in scc(&dep_graph) {
+    for component in kosaraju_scc(&dep_graph) {
         if component.len() == 1 {
             continue;
         }
