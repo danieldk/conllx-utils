@@ -1,12 +1,15 @@
 extern crate conllx;
 extern crate conllx_utils;
 extern crate getopts;
+extern crate stdinout;
 
 use std::env::args;
+use std::io::BufWriter;
 
 use conllx::{Sentence, WriteSentence};
-use conllx_utils::{or_exit, or_stdin, or_stdout, simplify_unicode};
+use conllx_utils::{or_exit, simplify_unicode};
 use getopts::Options;
+use stdinout::{Input, Output};
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} [options] [INPUT_FILE] [OUTPUT_FILE]", program);
@@ -31,11 +34,11 @@ fn main() {
         return;
     }
 
-    let input = or_stdin(matches.free.get(0));
+    let input = Input::from(matches.free.get(0));
     let reader = conllx::Reader::new(or_exit(input.buf_read()));
 
-    let output = or_stdout(matches.free.get(1));
-    let mut writer = conllx::Writer::new(or_exit(output.buf_write()));
+    let output = Output::from(matches.free.get(1));
+    let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
     for sentence in reader {
         let mut sentence = or_exit(sentence);
         cleanup(&mut sentence);

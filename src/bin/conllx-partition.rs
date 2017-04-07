@@ -2,16 +2,18 @@ extern crate conllx;
 extern crate conllx_utils;
 extern crate flate2;
 extern crate getopts;
+extern crate stdinout;
 
 use std::env::args;
 use std::fs::File;
 use std::io::{BufRead, BufWriter, Write};
 
 use conllx::{PartitioningWriter, WriteSentence, Writer};
-use conllx_utils::{or_exit, or_stdin};
+use conllx_utils::or_exit;
 use flate2::Compression;
 use flate2::write::GzEncoder;
 use getopts::Options;
+use stdinout::Input;
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} N PREFIX SUFFIX [FILE]", program);
@@ -53,7 +55,7 @@ fn main() {
     let prefix = &matches.free[1];
     let suffix = &matches.free[2];
 
-    let input = or_stdin(matches.free.get(3));
+    let input = Input::from(matches.free.get(3));
     let reader = conllx::Reader::new(or_exit(input.buf_read()));
 
     let writers: Vec<_> = (0..n)

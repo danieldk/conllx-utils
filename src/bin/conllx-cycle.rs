@@ -3,16 +3,18 @@ extern crate conllx_utils;
 extern crate getopts;
 extern crate itertools;
 extern crate petgraph;
+extern crate stdinout;
 
 use std::env::args;
 
 use conllx::Sentence;
-use conllx_utils::{or_exit, or_stdin};
+use conllx_utils::or_exit;
 use getopts::Options;
 use itertools::Itertools;
 use petgraph::{Directed, Graph};
 use petgraph::graph::node_index;
 use petgraph::algo::kosaraju_scc;
+use stdinout::Input;
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} [options] FILE", program);
@@ -38,7 +40,7 @@ fn main() {
         return;
     }
 
-    let input = or_stdin(matches.free.get(0));
+    let input = Input::from(matches.free.get(0));
     let reader = conllx::Reader::new(or_exit(input.buf_read()));
     for sentence in reader {
         let sentence = or_exit(sentence);

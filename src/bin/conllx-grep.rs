@@ -2,14 +2,17 @@ extern crate conllx;
 extern crate conllx_utils;
 extern crate getopts;
 extern crate regex;
+extern crate stdinout;
 
 use std::env::args;
+use std::io::BufWriter;
+use std::process;
 
 use conllx::{Sentence, WriteSentence};
-use conllx_utils::{LAYER_CALLBACKS, LayerCallback, or_exit, or_stdin, or_stdout};
+use conllx_utils::{LAYER_CALLBACKS, LayerCallback, or_exit};
 use getopts::Options;
 use regex::Regex;
-use std::process;
+use stdinout::{Input, Output};
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} [options] EXPR [INPUT_FILE] [OUTPUT_FILE]",
@@ -51,11 +54,11 @@ fn main() {
     }
 
     let re = or_exit(Regex::new(&matches.free[0]));
-    let input = or_stdin(matches.free.get(1));
+    let input = Input::from(matches.free.get(1));
     let reader = conllx::Reader::new(or_exit(input.buf_read()));
 
-    let output = or_stdout(matches.free.get(2));
-    let mut writer = conllx::Writer::new(or_exit(output.buf_write()));
+    let output = Output::from(matches.free.get(2));
+    let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
     for sentence in reader {
         let sentence = or_exit(sentence);
         if match_sentence(&re, callback, &sentence) {

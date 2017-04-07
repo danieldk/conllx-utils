@@ -3,12 +3,15 @@ extern crate conllx_utils;
 extern crate getopts;
 extern crate rand;
 extern crate reservoir;
+extern crate stdinout;
 
 use std::env::args;
+use std::io::BufWriter;
 
 use conllx::{ReadSentence, WriteSentence};
-use conllx_utils::{or_exit, or_stdin, or_stdout};
+use conllx_utils::or_exit;
 use getopts::Options;
+use stdinout::{Input, Output};
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} [options] SAMPLE_SIZE [INPUT_FILE] [OUTPUT_FILE]",
@@ -36,11 +39,11 @@ fn main() {
 
     let sample_size = or_exit(matches.free[0].parse());
 
-    let input = or_stdin(matches.free.get(1));
+    let input = Input::from(matches.free.get(1));
     let reader = conllx::Reader::new(or_exit(input.buf_read()));
 
-    let output = or_stdout(matches.free.get(2));
-    let mut writer = conllx::Writer::new(or_exit(output.buf_write()));
+    let output = Output::from(matches.free.get(2));
+    let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
 
     let mut rng = rand::weak_rng();
     let sample = reservoir::sample(&mut rng,
