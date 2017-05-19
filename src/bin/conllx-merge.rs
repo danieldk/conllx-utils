@@ -10,7 +10,7 @@ use std::io::{BufReader, BufWriter, Write};
 use conllx::WriteSentence;
 use conllx_utils::or_exit;
 use getopts::Options;
-use stdinout::{Input, Output};
+use stdinout::Output;
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} [options] FILE...", program);
