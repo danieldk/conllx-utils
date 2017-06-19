@@ -14,8 +14,10 @@ use getopts::Options;
 use stdinout::{Input, Output};
 
 fn print_usage(program: &str, opts: Options) {
-    let brief = format!("Usage: {} [options] SAMPLE_SIZE [INPUT_FILE] [OUTPUT_FILE]",
-                        program);
+    let brief = format!(
+        "Usage: {} [options] SAMPLE_SIZE [INPUT_FILE] [OUTPUT_FILE]",
+        program
+    );
     print!("{}", opts.usage(&brief));
 }
 
@@ -46,9 +48,11 @@ fn main() {
     let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
 
     let mut rng = rand::weak_rng();
-    let sample = reservoir::sample(&mut rng,
-                                   sample_size,
-                                   reader.sentences().map(|s| or_exit(s)));
+    let sample = reservoir::sample(
+        &mut rng,
+        sample_size,
+        reader.sentences().map(|s| or_exit(s)),
+    );
     for sentence in sample {
         or_exit(writer.write_sentence(&sentence));
     }

@@ -21,11 +21,14 @@ fn print_usage(program: &str, opts: Options) {
 }
 
 fn create_writer<S>(filename: S, gzip: bool) -> Writer<Box<Write>>
-    where S: Into<String>
+where
+    S: Into<String>,
 {
     let file = or_exit(File::create(filename.into()));
     if gzip {
-        conllx::Writer::new(Box::new(BufWriter::new(GzEncoder::new(file, Compression::Default))))
+        conllx::Writer::new(Box::new(
+            BufWriter::new(GzEncoder::new(file, Compression::Default)),
+        ))
     } else {
         conllx::Writer::new(Box::new(BufWriter::new(file)))
     }
@@ -60,8 +63,10 @@ fn main() {
 
     let writers: Vec<_> = (0..n)
         .map(|part| {
-            create_writer(format!("{}{}{}", prefix, part, suffix),
-                          matches.opt_present("z"))
+            create_writer(
+                format!("{}{}{}", prefix, part, suffix),
+                matches.opt_present("z"),
+            )
         })
         .collect();
 
@@ -72,8 +77,9 @@ fn main() {
 }
 
 fn copy_sents<R, W>(reader: conllx::Reader<R>, mut writer: W)
-    where R: BufRead,
-          W: WriteSentence
+where
+    R: BufRead,
+    W: WriteSentence,
 {
     for sentence in reader {
         let sentence = or_exit(sentence);

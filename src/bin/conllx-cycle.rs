@@ -75,7 +75,9 @@ fn check_cycles(sentence: &Sentence, projective: bool) {
             sentence_printed = true
         }
 
-        println!("Cycle: {}",
-                 component.iter().map(|i| i.index().to_string()).join(", "));
+        println!(
+            "Cycle: {}",
+            component.iter().map(|i| i.index().to_string()).join(", ")
+        );
     }
 }

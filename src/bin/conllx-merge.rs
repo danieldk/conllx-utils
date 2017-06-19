@@ -43,7 +43,8 @@ fn main() {
 }
 
 fn copy_sents<W>(writer: &mut conllx::Writer<W>, filenames: &Vec<String>)
-    where W: Write
+where
+    W: Write,
 {
     for filename in filenames {
         let file = or_exit(File::open(&filename));

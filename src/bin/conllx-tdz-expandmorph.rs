@@ -22,9 +22,11 @@ fn main() {
 
     let mut opts = Options::new();
     opts.optflag("h", "help", "print this help menu");
-    opts.optflag("n",
-                 "no-preserve",
-                 "do not preserve original TüBa morph tag");
+    opts.optflag(
+        "n",
+        "no-preserve",
+        "do not preserve original TüBa morph tag",
+    );
     let matches = or_exit(opts.parse(&args[1..]));
 
     if matches.opt_present("h") {

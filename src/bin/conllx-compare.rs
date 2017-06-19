@@ -27,16 +27,20 @@ fn main() {
 
     let mut opts = Options::new();
     opts.optflag("h", "help", "print this help menu");
-    opts.optopt("l",
-                "layer",
-                "layer(s) to compare (form, lemma, cpos, pos, features, \
+    opts.optopt(
+        "l",
+        "layer",
+        "layer(s) to compare (form, lemma, cpos, pos, features, \
                  head, headrel, phead, or pheadrel, default: headrel)",
-                "LAYER[,LAYER]");
-    opts.optopt("s",
-                "show",
-                "extra layer(s) to show from first file (form, lemma, cpos, \
+        "LAYER[,LAYER]",
+    );
+    opts.optopt(
+        "s",
+        "show",
+        "extra layer(s) to show from first file (form, lemma, cpos, \
                  pos, features, head, headrel, phead, or pheadrel, default: form)",
-                "LAYER[,LAYER]");
+        "LAYER[,LAYER]",
+    );
     let matches = or_exit(opts.parse(&args[1..]));
 
     if matches.opt_present("h") {
@@ -55,7 +59,12 @@ fn main() {
     let reader1 = or_exit(reader(&matches.free[0]));
     let reader2 = or_exit(reader(&matches.free[1]));
 
-    or_exit(compare_sentences(reader1, reader2, &callbacks, &show_callbacks));
+    or_exit(compare_sentences(
+        reader1,
+        reader2,
+        &callbacks,
+        &show_callbacks,
+    ));
 }
 
 fn reader(filename: &str) -> io::Result<conllx::Reader<Box<BufRead>>> {
@@ -64,9 +73,10 @@ fn reader(filename: &str) -> io::Result<conllx::Reader<Box<BufRead>>> {
     Ok(conllx::Reader::new(buf_read))
 }
 
-fn process_callbacks(callback_option: Option<String>,
-                     default: Vec<&'static LayerCallback>)
-                     -> Vec<&'static LayerCallback> {
+fn process_callbacks(
+    callback_option: Option<String>,
+    default: Vec<&'static LayerCallback>,
+) -> Vec<&'static LayerCallback> {
     if callback_option.is_none() {
         return default;
     }
@@ -85,11 +95,12 @@ fn process_callbacks(callback_option: Option<String>,
     callbacks
 }
 
-fn compare_sentences(reader1: conllx::Reader<Box<BufRead>>,
-                     reader2: conllx::Reader<Box<BufRead>>,
-                     diff_callbacks: &[&LayerCallback],
-                     show_callbacks: &[&LayerCallback])
-                     -> conllx::Result<()> {
+fn compare_sentences(
+    reader1: conllx::Reader<Box<BufRead>>,
+    reader2: conllx::Reader<Box<BufRead>>,
+    diff_callbacks: &[&LayerCallback],
+    show_callbacks: &[&LayerCallback],
+) -> conllx::Result<()> {
     for (sent1, sent2) in reader1.into_iter().zip(reader2.into_iter()) {
         let (sent1, sent2) = (sent1?, sent2?);
         let tokens1 = sent1.as_tokens();
@@ -106,15 +117,21 @@ fn compare_sentences(reader1: conllx::Reader<Box<BufRead>>,
     Result::Ok(())
 }
 
-fn print_diff(tokens1: &[Token],
-              tokens2: &[Token],
-              diff_callbacks: &[&LayerCallback],
-              show_callbacks: &[&LayerCallback]) {
+fn print_diff(
+    tokens1: &[Token],
+    tokens2: &[Token],
+    diff_callbacks: &[&LayerCallback],
+    show_callbacks: &[&LayerCallback],
+) {
     for idx in 0..tokens1.len() {
         let mut columns = Vec::new();
 
         for callback in show_callbacks {
-            columns.push(callback(&tokens1[idx]).unwrap_or(Cow::Borrowed("_")).into_owned());
+            columns.push(
+                callback(&tokens1[idx])
+                    .unwrap_or(Cow::Borrowed("_"))
+                    .into_owned(),
+            );
         }
 
         for callback in diff_callbacks {
@@ -134,15 +151,19 @@ fn print_diff(tokens1: &[Token],
     }
 }
 
-fn diff_indices(tokens1: &[Token],
-                tokens2: &[Token],
-                diff_callbacks: &[&LayerCallback])
-                -> conllx::Result<BTreeSet<usize>> {
+fn diff_indices(
+    tokens1: &[Token],
+    tokens2: &[Token],
+    diff_callbacks: &[&LayerCallback],
+) -> conllx::Result<BTreeSet<usize>> {
     if tokens1.len() != tokens2.len() {
-        return Result::Err(format!("Different number of tokens: {} {}",
-                                   tokens1.len(),
-                                   tokens2.len())
-            .into());
+        return Result::Err(
+            format!(
+                "Different number of tokens: {} {}",
+                tokens1.len(),
+                tokens2.len()
+            ).into(),
+        );
     }
 
     let mut indices = BTreeSet::new();

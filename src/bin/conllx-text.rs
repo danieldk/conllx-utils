@@ -52,6 +52,10 @@ fn main() {
             Box::new(|t| t.form().unwrap_or("_"))
         };
 
-        or_exit(writeln!(writer, "{}", sentence.iter().map(|t| layer_f(t)).join(" ")));
+        or_exit(writeln!(
+            writer,
+            "{}",
+            sentence.iter().map(|t| layer_f(t)).join(" ")
+        ));
     }
 }

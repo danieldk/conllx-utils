@@ -2,7 +2,7 @@ use conllx::{Features, Token};
 use std::collections::HashMap;
 use std::fmt;
 
-#[derive(Debug,Hash,Eq,PartialEq)]
+#[derive(Debug, Hash, Eq, PartialEq)]
 enum MorphAttribute {
     Case,
     Gender,
