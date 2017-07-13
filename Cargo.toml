@@ -4,7 +4,7 @@ version = "0.2.1"
 authors = ["Daniël de Kok <me@danieldk.eu>"]
 
 [dependencies]
-conllx = "0.6"
+conllx = "0.7"
 colored = "1.4"
 flate2 = "0.2"
 itertools = "0.5"
