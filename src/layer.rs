@@ -31,8 +31,7 @@ fn features(t: &Token) -> Option<Cow<str>> {
 }
 
 fn form(t: &Token) -> Option<Cow<str>> {
-    t.form().map(Cow::Borrowed)
-
+    Some(Cow::Borrowed(t.form()))
 }
 
 fn head(t: &Token) -> Option<Cow<str>> {

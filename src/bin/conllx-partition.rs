@@ -70,7 +70,6 @@ fn main() {
         })
         .collect();
 
-
     let writer = PartitioningWriter::new(writers);
 
     copy_sents(reader, writer)

@@ -49,7 +49,7 @@ fn main() {
         let mut layer_f: Box<FnMut(&Token) -> &str> = if matches.opt_present("l") {
             Box::new(|t| t.lemma().unwrap_or("_"))
         } else {
-            Box::new(|t| t.form().unwrap_or("_"))
+            Box::new(|t| t.form())
         };
 
         or_exit(writeln!(
