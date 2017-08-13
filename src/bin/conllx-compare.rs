@@ -13,7 +13,7 @@ use std::process;
 
 use colored::*;
 use conllx::Token;
-use conllx_utils::{LAYER_CALLBACKS, LayerCallback, or_exit};
+use conllx_utils::{or_exit, LayerCallback, LAYER_CALLBACKS};
 use getopts::Options;
 
 fn print_usage(program: &str, opts: Options) {
@@ -31,14 +31,14 @@ fn main() {
         "l",
         "layer",
         "layer(s) to compare (form, lemma, cpos, pos, features, \
-                 head, headrel, phead, or pheadrel, default: headrel)",
+         head, headrel, phead, or pheadrel, default: headrel)",
         "LAYER[,LAYER]",
     );
     opts.optopt(
         "s",
         "show",
         "extra layer(s) to show from first file (form, lemma, cpos, \
-                 pos, features, head, headrel, phead, or pheadrel, default: form)",
+         pos, features, head, headrel, phead, or pheadrel, default: form)",
         "LAYER[,LAYER]",
     );
     let matches = or_exit(opts.parse(&args[1..]));

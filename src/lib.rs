@@ -12,10 +12,10 @@ mod cmd;
 pub use cmd::or_exit;
 
 mod layer;
-pub use layer::{LAYER_CALLBACKS, LayerCallback};
+pub use layer::{LayerCallback, LAYER_CALLBACKS};
 
 mod tdz_morph;
-pub use tdz_morph::{MorphError, expand_tdz_morph};
+pub use tdz_morph::{expand_tdz_morph, MorphError};
 
 mod unicode;
-pub use unicode::{simplify_unicode_punct, simplify_unicode};
+pub use unicode::{simplify_unicode, simplify_unicode_punct};

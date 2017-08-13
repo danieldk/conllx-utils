@@ -9,7 +9,7 @@ use std::io::BufWriter;
 use std::process;
 
 use conllx::{Sentence, WriteSentence};
-use conllx_utils::{LAYER_CALLBACKS, LayerCallback, or_exit};
+use conllx_utils::{or_exit, LayerCallback, LAYER_CALLBACKS};
 use getopts::Options;
 use regex::Regex;
 use stdinout::{Input, Output};
@@ -75,11 +75,9 @@ fn main() {
 fn match_sentence(re: &Regex, callback: &LayerCallback, sentence: &Sentence) -> bool {
     for token in sentence {
         match callback(token).as_ref() {
-            Some(token) => {
-                if re.is_match(&token) {
-                    return true;
-                }
-            }
+            Some(token) => if re.is_match(&token) {
+                return true;
+            },
             None => (),
         }
     }
