@@ -11,7 +11,7 @@ extern crate maplit;
 extern crate rand;
 
 mod cmd;
-pub use cmd::{open_reader, or_exit};
+pub use cmd::{open_reader, open_writer, or_exit};
 
 mod layer;
 pub use layer::{LayerCallback, LAYER_CALLBACKS};

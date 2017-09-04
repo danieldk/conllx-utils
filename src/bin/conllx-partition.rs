@@ -5,13 +5,10 @@ extern crate getopts;
 extern crate stdinout;
 
 use std::env::args;
-use std::fs::File;
-use std::io::{BufRead, BufWriter, Write};
+use std::io::BufRead;
 
-use conllx::{PartitioningWriter, WriteSentence, Writer};
-use conllx_utils::or_exit;
-use flate2::Compression;
-use flate2::write::GzEncoder;
+use conllx::{PartitioningWriter, WriteSentence};
+use conllx_utils::{open_writer, or_exit};
 use getopts::Options;
 use stdinout::Input;
 
@@ -20,28 +17,12 @@ fn print_usage(program: &str, opts: Options) {
     print!("{}", opts.usage(&brief));
 }
 
-fn create_writer<S>(filename: S, gzip: bool) -> Writer<Box<Write>>
-where
-    S: Into<String>,
-{
-    let file = or_exit(File::create(filename.into()));
-    if gzip {
-        conllx::Writer::new(Box::new(
-            BufWriter::new(GzEncoder::new(file, Compression::Default)),
-        ))
-    } else {
-        conllx::Writer::new(Box::new(BufWriter::new(file)))
-    }
-
-}
-
 fn main() {
     let args: Vec<String> = args().collect();
     let program = args[0].clone();
 
     let mut opts = Options::new();
     opts.optflag("h", "help", "print this help menu");
-    opts.optflag("z", "gzip", "gzip-compress output files");
     let matches = or_exit(opts.parse(&args[1..]));
 
     if matches.opt_present("h") {
@@ -63,10 +44,7 @@ fn main() {
 
     let writers: Vec<_> = (0..n)
         .map(|part| {
-            create_writer(
-                format!("{}{}{}", prefix, part, suffix),
-                matches.opt_present("z"),
-            )
+            or_exit(open_writer(&format!("{}{}{}", prefix, part, suffix)))
         })
         .collect();
 
