@@ -6,14 +6,12 @@ extern crate getopts;
 use std::borrow::Cow;
 use std::collections::BTreeSet;
 use std::env::args;
-use std::fs::File;
-use std::io;
-use std::io::{BufRead, BufReader};
+use std::io::BufRead;
 use std::process;
 
 use colored::*;
 use conllx::Token;
-use conllx_utils::{or_exit, LayerCallback, LAYER_CALLBACKS};
+use conllx_utils::{open_reader, or_exit, LayerCallback, LAYER_CALLBACKS};
 use getopts::Options;
 
 fn print_usage(program: &str, opts: Options) {
@@ -56,8 +54,8 @@ fn main() {
         return;
     }
 
-    let reader1 = or_exit(reader(&matches.free[0]));
-    let reader2 = or_exit(reader(&matches.free[1]));
+    let reader1 = or_exit(open_reader(&matches.free[0]));
+    let reader2 = or_exit(open_reader(&matches.free[1]));
 
     or_exit(compare_sentences(
         reader1,
@@ -65,12 +63,6 @@ fn main() {
         &callbacks,
         &show_callbacks,
     ));
-}
-
-fn reader(filename: &str) -> io::Result<conllx::Reader<Box<BufRead>>> {
-    let file = File::open(filename)?;
-    let buf_read = Box::new(BufReader::new(file));
-    Ok(conllx::Reader::new(buf_read))
 }
 
 fn process_callbacks(
