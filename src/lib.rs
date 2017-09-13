@@ -8,8 +8,6 @@ extern crate lazy_static;
 #[macro_use]
 extern crate maplit;
 
-extern crate rand;
-
 mod cmd;
 pub use cmd::{open_reader, open_writer, or_exit};
 

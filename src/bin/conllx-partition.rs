@@ -1,6 +1,5 @@
 extern crate conllx;
 extern crate conllx_utils;
-extern crate flate2;
 extern crate getopts;
 extern crate stdinout;
 
