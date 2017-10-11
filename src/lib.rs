@@ -8,8 +8,13 @@ extern crate lazy_static;
 #[macro_use]
 extern crate maplit;
 
+extern crate petgraph;
+
 mod cmd;
 pub use cmd::{open_reader, open_writer, or_exit};
+
+mod graph;
+pub use graph::{first_matching_edge, sentence_to_graph, DependencyGraph, DependencyNode};
 
 mod layer;
 pub use layer::{LayerCallback, LAYER_CALLBACKS};
