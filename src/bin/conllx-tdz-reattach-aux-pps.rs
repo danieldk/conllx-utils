@@ -27,30 +27,22 @@ macro_rules! ok_or_continue {
     })
 }
 
-fn print_usage(program: &str, opts: Options) {
-    let brief = format!("Usage: {} [options] [INPUT_FILE] [OUTPUT_FILE]", program);
-    print!("{}", opts.usage(&brief));
-}
-
 static AUXILIARY_RELATION: &'static str = "AUX";
 static PP_RELATION: &'static str = "PP";
 static POBJ_RELATION: &'static str = "OBJP";
 
-static FINITE_VERB_TAG: &'static str = "VVFIN";
-static FINITE_AUXILIARY_TAG: &'static str = "VAFIN";
-static FINITE_MODAL_TAG: &'static str = "VMFIN";
+const VERB_PREFIX: char = 'V';
 
 lazy_static! {
-    static ref FINITE_VERB_TAGS: HashSet<&'static str> = hashset!{
-        FINITE_VERB_TAG,
-        FINITE_AUXILIARY_TAG,
-        FINITE_MODAL_TAG
-    };
-
     static ref PP_RELATIONS: HashSet<&'static str> = hashset! {
         PP_RELATION,
         POBJ_RELATION
     };
+}
+
+fn print_usage(program: &str, opts: Options) {
+    let brief = format!("Usage: {} [options] [INPUT_FILE] [OUTPUT_FILE]", program);
+    print!("{}", opts.usage(&brief));
 }
 
 fn main() {
@@ -132,9 +124,9 @@ fn find_reattachments(sentence: &Sentence) -> Vec<(usize, usize)> {
 
         let head_node = &graph[edge_ref.source()];
 
-        // Check that the head is a finite verb.
+        // Check that the head is a verb.
         let tag = ok_or_continue!(head_node.token.pos());
-        if !FINITE_VERB_TAGS.contains(tag) {
+        if !tag.starts_with(VERB_PREFIX) {
             continue;
         }
 
