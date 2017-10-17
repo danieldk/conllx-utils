@@ -8,6 +8,10 @@ extern crate lazy_static;
 #[macro_use]
 extern crate maplit;
 
+#[cfg(test)]
+#[macro_use]
+extern crate pretty_assertions;
+
 extern crate petgraph;
 
 mod cmd;
@@ -18,6 +22,9 @@ pub use graph::{first_matching_edge, sentence_to_graph, DependencyGraph, Depende
 
 mod layer;
 pub use layer::{LayerCallback, LAYER_CALLBACKS};
+
+mod pp_reattach;
+pub use pp_reattach::reattach_aux_pps;
 
 mod tdz_morph;
 pub use tdz_morph::{expand_tdz_morph, MorphError};
