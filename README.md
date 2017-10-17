@@ -2,10 +2,8 @@
 
 ## Introduction
 
-This is a set of utilities to modify files in the CoNLL-X tabular files. The
-focus of this package is interoperability with TCF (Text Corpus Format).
-However, the majority of the utilities are also useful outside TCF. The
-package contains the following programs:
+This is a set of utilities to modify files in the CoNLL-X tabular
+files. The package contains the following programs:
 
 * conllx-cleanup: replace most Unicode punctuation characters by
   by ASCII equivalents.
