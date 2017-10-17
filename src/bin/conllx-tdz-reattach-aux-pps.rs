@@ -13,12 +13,12 @@ use std::env::args;
 use std::io::BufWriter;
 
 use conllx::{Sentence, WriteSentence};
-use conllx_utils::{first_matching_edge, or_exit, sentence_to_graph, DependencyGraph};
+use conllx_utils::{first_matching_edge, sentence_to_graph, DependencyGraph};
 use getopts::Options;
 use petgraph::EdgeDirection;
 use petgraph::graph::NodeIndex;
 use petgraph::visit::EdgeRef;
-use stdinout::{Input, Output};
+use stdinout::{Input, OrExit, Output};
 
 macro_rules! ok_or_continue {
     ($expr:expr) => (match $expr {
@@ -56,7 +56,7 @@ fn main() {
         "no-preserve",
         "do not preserve original TüBa morph tag",
     );
-    let matches = or_exit(opts.parse(&args[1..]));
+    let matches = opts.parse(&args[1..]).or_exit("Could not parse options", 1);
 
     if matches.opt_present("h") {
         print_usage(&program, opts);
@@ -69,14 +69,18 @@ fn main() {
     }
 
     let input = Input::from(matches.free.get(0));
-    let reader = conllx::Reader::new(or_exit(input.buf_read()));
+    let reader = conllx::Reader::new(input.buf_read().or_exit("Cannot open input for reading", 1));
 
     let output = Output::from(matches.free.get(1));
-    let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
+    let mut writer = conllx::Writer::new(BufWriter::new(
+        output.write().or_exit("Cannot open output for writing", 1),
+    ));
     for sentence in reader {
-        let mut sentence = or_exit(sentence);
+        let mut sentence = sentence.or_exit("Error processing CoNLL-X sentence", 1);
         reattach_fronted_pps(&mut sentence);
-        or_exit(writer.write_sentence(&sentence))
+        writer
+            .write_sentence(&sentence)
+            .or_exit("Error writing sentence", 1);
     }
 }
 
