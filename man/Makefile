@@ -1,4 +1,4 @@
-all: conllx-cleanup.1 conllx-compare.1 conllx-cycle.1
+all: conllx-cleanup.1 conllx-compare.1 conllx-cycle.1 conllx-sample.1 conllx-tdz-expand-morph.1
 
 clean:
 	rm -f *.html
