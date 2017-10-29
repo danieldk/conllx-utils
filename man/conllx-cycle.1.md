@@ -1,6 +1,6 @@
 % CONLLX-CYCLE(1)
 % Daniel de Kok
-% Sep 21, 2016
+% Oct 29, 2017
 
 NAME
 ====
@@ -22,7 +22,8 @@ detected.
 If *INPUT_FILE* is not specified, **conllx-cycle** will read from the
 standard input.
 
-The following options are available:
+OPTIONS
+=======
 
 `-p`
 

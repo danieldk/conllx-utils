@@ -19,15 +19,19 @@ The **conllx-compare** compares two CoNLL-X files on certain columns. It
 prints out sentences where one or more column values differ. The differing
 columns are highlighted in red.
 
-The following options are available:
+If one the extension of the file ends in *.gz*, the file is decompressed
+while reading.
+
+OPTIONS
+=======
 
 `-l LAYER,[LAYER2[,...]]`
 
-:    Annotation layers to compare, default: headrel.
+:    Annotation layers to compare, default: *headrel*.
 
 `-s LAYER,[LAYER2[,...]]`
 
-:    Additional layers to print from the first file, default: form.
+:    Additional layers to print from the first file, default: *form*.
 
 LAYERS
 ========

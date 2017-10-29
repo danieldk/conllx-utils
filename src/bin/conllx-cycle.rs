@@ -17,7 +17,7 @@ use petgraph::algo::kosaraju_scc;
 use stdinout::Input;
 
 fn print_usage(program: &str, opts: Options) {
-    let brief = format!("Usage: {} [options] FILE", program);
+    let brief = format!("Usage: {} [options] [FILE]", program);
     print!("{}", opts.usage(&brief));
 }
 
