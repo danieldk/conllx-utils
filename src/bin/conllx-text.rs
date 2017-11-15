@@ -4,14 +4,15 @@ extern crate getopts;
 extern crate itertools;
 extern crate stdinout;
 
+use std::borrow::Cow;
 use std::env::args;
 use std::io::{BufWriter, Write};
+use std::process;
 
-use conllx::Token;
-use conllx_utils::or_exit;
+use conllx_utils::LAYER_CALLBACKS;
 use getopts::Options;
 use itertools::Itertools;
-use stdinout::{Input, Output};
+use stdinout::{Input, Output, OrExit};
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} [options] [INPUT_FILE] [OUTPUT_FILE]", program);
@@ -24,8 +25,13 @@ fn main() {
 
     let mut opts = Options::new();
     opts.optflag("h", "help", "print this help menu");
-    opts.optflag("l", "lemmas", "extract lemmas");
-    let matches = or_exit(opts.parse(&args[1..]));
+    opts.optopt(
+        "l",
+        "layer",
+        "layer: form, lemma, cpos, pos, headrel, or pheadrel (default: form)",
+        "LAYER",
+    );
+    let matches = opts.parse(&args[1..]).or_exit("Cannot process options", 1);
 
     if matches.opt_present("h") {
         print_usage(&program, opts);
@@ -37,25 +43,36 @@ fn main() {
         return;
     }
 
+    let callback = matches
+        .opt_str("l")
+        .as_ref()
+        .map(|layer| match LAYER_CALLBACKS.get(layer.as_str()) {
+            Some(c) => c,
+            None => {
+                println!("Unknown layer: {}", layer);
+                process::exit(1)
+            }
+        })
+        .unwrap_or(&LAYER_CALLBACKS["form"]);
+
     let input = Input::from(matches.free.get(0));
-    let reader = conllx::Reader::new(or_exit(input.buf_read()));
+    let reader = conllx::Reader::new(input.buf_read().or_exit("Cannot open input", 1));
 
     let output = Output::from(matches.free.get(1));
-    let mut writer = BufWriter::new(or_exit(output.write()));
+    let mut writer = BufWriter::new(output.write().or_exit("Cannot open output", 1));
 
     for sentence in reader {
-        let sentence = or_exit(sentence);
+        let sentence = sentence.or_exit("Cannot read sentence", 1);
 
-        let mut layer_f: Box<FnMut(&Token) -> &str> = if matches.opt_present("l") {
-            Box::new(|t| t.lemma().unwrap_or("_"))
-        } else {
-            Box::new(|t| t.form())
-        };
-
-        or_exit(writeln!(
+        writeln!(
             writer,
             "{}",
-            sentence.iter().map(|t| layer_f(t)).join(" ")
-        ));
+            sentence
+                .iter()
+                .map(|t| {
+                    callback(t).map(Cow::into_owned).unwrap_or("_".to_owned())
+                })
+                .join(" ")
+        ).or_exit("Cannot write sentence", 1);
     }
 }
