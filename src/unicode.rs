@@ -1,3 +1,28 @@
+use unicode_normalization::UnicodeNormalization;
+
+/// Types of unicode normalization.
+#[derive(Copy, Clone)]
+pub enum Normalization {
+    None,
+    NFD,
+    NFKD,
+    NFC,
+    NFKC
+}
+
+
+fn normalization_iter<'a, I>(iter: I, norm: Normalization) -> Box<Iterator<Item = char> + 'a> where I: 'a + Iterator<Item = char> {
+    use self::Normalization::*;
+
+    match norm {
+        None => Box::new(iter),
+        NFD => Box::new(iter.nfd()),
+        NFKD => Box::new(iter.nfkd()),
+        NFC => Box::new(iter.nfc()),
+        NFKC => Box::new(iter.nfkc()),
+    }
+}
+
 pub enum Conversion {
     Char(char),
     String(String),
@@ -91,8 +116,8 @@ pub fn simplify_unicode_punct(c: char) -> Conversion {
     }
 }
 
-pub fn simplify_unicode(s: &str) -> String {
-    s.chars().fold(String::with_capacity(s.len()), |mut s, c| {
+pub fn simplify_unicode(s: &str, norm: Normalization) -> String {
+    normalization_iter(s.chars(), norm).fold(String::with_capacity(s.len()), |mut s, c| {
         match simplify_unicode_punct(c) {
             Conversion::Char(c) => s.push(c),
             Conversion::String(ss) => s.push_str(&ss),

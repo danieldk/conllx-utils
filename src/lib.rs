@@ -14,6 +14,8 @@ extern crate pretty_assertions;
 
 extern crate petgraph;
 
+extern crate unicode_normalization;
+
 mod cmd;
 pub use cmd::{open_reader, open_writer, or_exit};
 
@@ -30,4 +32,4 @@ mod tdz_morph;
 pub use tdz_morph::{expand_tdz_morph, MorphError};
 
 mod unicode;
-pub use unicode::{simplify_unicode, simplify_unicode_punct};
+pub use unicode::{simplify_unicode, simplify_unicode_punct, Normalization};

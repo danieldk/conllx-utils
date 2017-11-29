@@ -16,6 +16,7 @@ reservoir = "0.2"
 rand = "0.3"
 regex = "0.2"
 stdinout = "0.4"
+unicode-normalization = "0.1"
 
 [dev-dependencies]
 pretty_assertions = "0.3"
