@@ -33,7 +33,7 @@ pub fn reattach_aux_pps(sentence: &mut Sentence) {
     let updates = find_reattachments(&sentence);
 
     for (prep_offset, new_head) in updates {
-        sentence.as_tokens_mut()[prep_offset].set_head(Some(new_head + 1));
+        sentence[prep_offset].set_head(Some(new_head + 1));
     }
 }
 

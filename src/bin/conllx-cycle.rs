@@ -7,7 +7,7 @@ extern crate stdinout;
 
 use std::env::args;
 
-use conllx::Sentence;
+use conllx::{DisplaySentence, Sentence};
 use conllx_utils::or_exit;
 use getopts::Options;
 use itertools::Itertools;
@@ -71,7 +71,7 @@ fn check_cycles(sentence: &Sentence, projective: bool) {
         }
 
         if !sentence_printed {
-            println!("{}\n", sentence);
+            println!("{}\n", DisplaySentence(sentence));
             sentence_printed = true
         }
 

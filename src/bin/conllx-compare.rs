@@ -1,6 +1,8 @@
 extern crate colored;
 extern crate conllx;
 extern crate conllx_utils;
+#[macro_use]
+extern crate failure;
 extern crate getopts;
 
 use std::borrow::Cow;
@@ -12,6 +14,7 @@ use std::process;
 use colored::*;
 use conllx::Token;
 use conllx_utils::{open_reader, or_exit, LayerCallback, LAYER_CALLBACKS};
+use failure::Error;
 use getopts::Options;
 
 fn print_usage(program: &str, opts: Options) {
@@ -92,16 +95,14 @@ fn compare_sentences(
     reader2: conllx::Reader<Box<BufRead>>,
     diff_callbacks: &[&LayerCallback],
     show_callbacks: &[&LayerCallback],
-) -> conllx::Result<()> {
+) -> Result<(), Error> {
     for (sent1, sent2) in reader1.into_iter().zip(reader2.into_iter()) {
         let (sent1, sent2) = (sent1?, sent2?);
-        let tokens1 = sent1.as_tokens();
-        let tokens2 = sent2.as_tokens();
 
-        let diff = diff_indices(tokens1, tokens2, diff_callbacks)?;
+        let diff = diff_indices(&sent1, &sent2, diff_callbacks)?;
 
         if !diff.is_empty() {
-            print_diff(tokens1, tokens2, diff_callbacks, show_callbacks);
+            print_diff(&sent1, &sent2, diff_callbacks, show_callbacks);
             println!();
         }
     }
@@ -147,16 +148,10 @@ fn diff_indices(
     tokens1: &[Token],
     tokens2: &[Token],
     diff_callbacks: &[&LayerCallback],
-) -> conllx::Result<BTreeSet<usize>> {
-    if tokens1.len() != tokens2.len() {
-        return Result::Err(
-            format!(
-                "Different number of tokens: {} {}",
-                tokens1.len(),
-                tokens2.len()
-            ).into(),
-        );
-    }
+) -> Result<BTreeSet<usize>, Error> {
+    ensure!(tokens1.len() != tokens2.len(),
+        "Different number of tokens: {} {}",
+        tokens1.len(), tokens2.len());
 
     let mut indices = BTreeSet::new();
 
