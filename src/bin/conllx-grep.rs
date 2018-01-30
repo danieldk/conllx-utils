@@ -4,11 +4,12 @@ extern crate getopts;
 extern crate regex;
 extern crate stdinout;
 
+use std::collections::{BTreeMap, HashSet};
 use std::env::args;
 use std::io::BufWriter;
 use std::process;
 
-use conllx::{Sentence, WriteSentence};
+use conllx::{Features, Sentence, WriteSentence};
 use conllx_utils::{or_exit, LayerCallback, LAYER_CALLBACKS};
 use getopts::Options;
 use regex::Regex;
@@ -34,12 +35,20 @@ fn main() {
         "layer: form, lemma, cpos, pos, headrel, or pheadrel (default: form)",
         "LAYER",
     );
+    opts.optopt(
+        "m",
+        "mark",
+        "mark maching nodes using the given feature",
+        "FEATURE",
+    );
     let matches = or_exit(opts.parse(&args[1..]));
 
     if matches.opt_present("h") {
         print_usage(&program, opts);
         return;
     }
+
+    let mark_feature = matches.opt_str("m");
 
     let callback = matches
         .opt_str("l")
@@ -65,22 +74,38 @@ fn main() {
     let output = Output::from(matches.free.get(2));
     let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
     for sentence in reader {
-        let sentence = or_exit(sentence);
-        if match_sentence(&re, callback, &sentence) {
-            or_exit(writer.write_sentence(&sentence))
+        let mut sentence = or_exit(sentence);
+
+        let matches = match_indexes(&re, callback, &sentence);
+        if matches.is_empty() {
+            continue;
         }
+
+        if let Some(ref feature) = mark_feature {
+            for idx in matches {
+                let mut features = sentence[idx]
+                    .features()
+                    .map(|f| f.as_map().clone())
+                    .unwrap_or(BTreeMap::new());
+                features.insert(feature.clone(), None);
+                sentence[idx].set_features(Some(Features::from_iter(features)));
+            }
+        }
+
+        or_exit(writer.write_sentence(&sentence))
     }
 }
 
-fn match_sentence(re: &Regex, callback: &LayerCallback, sentence: &Sentence) -> bool {
-    for token in sentence {
-        match callback(token).as_ref() {
-            Some(token) => if re.is_match(&token) {
-                return true;
-            },
-            None => (),
+fn match_indexes(re: &Regex, callback: &LayerCallback, sentence: &Sentence) -> HashSet<usize> {
+    let mut indexes = HashSet::new();
+
+    for (idx, token) in sentence.iter().enumerate() {
+        if let Some(token) = callback(token) {
+            if re.is_match(token.as_ref()) {
+                indexes.insert(idx);
+            }
         }
     }
 
-    false
+    indexes
 }
