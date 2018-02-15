@@ -16,6 +16,7 @@ files. The package contains the following programs:
 * conllx-merge: merge CoNLL-X files.
 * conllx-partition: partition a CoNLL-X file in N files.
 * conllx-sample: take a random sample from a CoNLL-X file.
+* conllx-shuffle: shuffle sentences in a CoNLL-X file.
 * conllx-text: convert CoNLL-X file to plain text.
 
 ## Download
