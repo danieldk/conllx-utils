@@ -1,6 +1,6 @@
 % CONLLX-SAMPLE(1)
 % Daniel de Kok
-% Oct 29, 2017
+% Feb 15, 2018
 
 NAME
 ====
@@ -21,6 +21,14 @@ of a treebank using reservoir sampling.
 If *INPUT_FILE* is not specified, **conllx-sample** will read from the
 standard input. If *OUTPUT_FILE* is not specified, **conllx-sample** will
 write from the standard output.
+
+OPTIONS
+=======
+
+`-s SEED`
+
+:    Initialize the random number generator with the given seed. Using a
+     fixed seed makes the sampling reproducible.
 
 SEE ALSO
 ========

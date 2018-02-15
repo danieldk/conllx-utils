@@ -11,7 +11,8 @@ use std::io::BufWriter;
 use conllx::{ReadSentence, WriteSentence};
 use conllx_utils::or_exit;
 use getopts::Options;
-use stdinout::{Input, Output};
+use rand::{Rng, SeedableRng, XorShiftRng};
+use stdinout::{Input, OrExit, Output};
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!(
@@ -27,6 +28,7 @@ fn main() {
 
     let mut opts = Options::new();
     opts.optflag("h", "help", "print this help menu");
+    opts.optopt("s", "seed", "RNG seed", "SEED");
     let matches = or_exit(opts.parse(&args[1..]));
 
     if matches.opt_present("h") {
@@ -47,12 +49,23 @@ fn main() {
     let output = Output::from(matches.free.get(2));
     let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
 
-    let mut rng = rand::weak_rng();
+    let seed = if let Some(seed_str) = matches.opt_str("s") {
+        let seed_val: u32 = seed_str
+            .parse()
+            .or_exit(format!("Cannot not parse '{}' as an integer", seed_str), 1);
+        [seed_val; 4]
+    } else {
+        rand::thread_rng().gen()
+    };
+
+    let mut rng = XorShiftRng::from_seed(seed);
+
     let sample = reservoir::sample(
         &mut rng,
         sample_size,
         reader.sentences().map(|s| or_exit(s)),
     );
+
     for sentence in sample {
         or_exit(writer.write_sentence(&sentence));
     }
