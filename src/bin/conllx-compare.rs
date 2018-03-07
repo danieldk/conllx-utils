@@ -149,9 +149,12 @@ fn diff_indices(
     tokens2: &[Token],
     diff_callbacks: &[&LayerCallback],
 ) -> Result<BTreeSet<usize>, Error> {
-    ensure!(tokens1.len() != tokens2.len(),
+    ensure!(
+        tokens1.len() == tokens2.len(),
         "Different number of tokens: {} {}",
-        tokens1.len(), tokens2.len());
+        tokens1.len(),
+        tokens2.len()
+    );
 
     let mut indices = BTreeSet::new();
 
