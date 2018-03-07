@@ -47,13 +47,9 @@ fn main() {
         let sentence = or_exit(sentence);
 
         if deproj {
-            or_exit(
-                writer.write_sentence(&or_exit(projectivizer.deprojectivize(&sentence))),
-            );
+            or_exit(writer.write_sentence(&or_exit(projectivizer.deprojectivize(&sentence))));
         } else {
-            or_exit(
-                writer.write_sentence(&or_exit(projectivizer.projectivize(&sentence))),
-            );
+            or_exit(writer.write_sentence(&or_exit(projectivizer.projectivize(&sentence))));
         }
     }
 }

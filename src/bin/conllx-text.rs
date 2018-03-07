@@ -12,7 +12,7 @@ use std::process;
 use conllx_utils::LAYER_CALLBACKS;
 use getopts::Options;
 use itertools::Itertools;
-use stdinout::{Input, Output, OrExit};
+use stdinout::{Input, OrExit, Output};
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} [options] [INPUT_FILE] [OUTPUT_FILE]", program);
@@ -69,9 +69,7 @@ fn main() {
             "{}",
             sentence
                 .iter()
-                .map(|t| {
-                    callback(t).map(Cow::into_owned).unwrap_or("_".to_owned())
-                })
+                .map(|t| callback(t).map(Cow::into_owned).unwrap_or("_".to_owned()))
                 .join(" ")
         ).or_exit("Cannot write sentence", 1);
     }

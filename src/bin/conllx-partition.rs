@@ -42,9 +42,7 @@ fn main() {
     let reader = conllx::Reader::new(or_exit(input.buf_read()));
 
     let writers: Vec<_> = (0..n)
-        .map(|part| {
-            or_exit(open_writer(&format!("{}{}{}", prefix, part, suffix)))
-        })
+        .map(|part| or_exit(open_writer(&format!("{}{}{}", prefix, part, suffix))))
         .collect();
 
     let writer = PartitioningWriter::new(writers);

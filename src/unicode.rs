@@ -7,11 +7,13 @@ pub enum Normalization {
     NFD,
     NFKD,
     NFC,
-    NFKC
+    NFKC,
 }
 
-
-fn normalization_iter<'a, I>(iter: I, norm: Normalization) -> Box<Iterator<Item = char> + 'a> where I: 'a + Iterator<Item = char> {
+fn normalization_iter<'a, I>(iter: I, norm: Normalization) -> Box<Iterator<Item = char> + 'a>
+where
+    I: 'a + Iterator<Item = char>,
+{
     use self::Normalization::*;
 
     match norm {

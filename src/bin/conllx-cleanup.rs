@@ -7,24 +7,26 @@ use std::env::args;
 use std::io::BufWriter;
 
 use conllx::{Sentence, WriteSentence};
-use conllx_utils::{Normalization, or_exit, simplify_unicode};
+use conllx_utils::{or_exit, simplify_unicode, Normalization};
 use getopts::Options;
-use stdinout::{Input, Output, OrExit};
+use stdinout::{Input, OrExit, Output};
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} [options] [INPUT_FILE] [OUTPUT_FILE]", program);
     print!("{}", opts.usage(&brief));
 }
 
-
-fn normalization_from<S>(value: S) -> Option<Normalization> where S: AsRef<str> {
+fn normalization_from<S>(value: S) -> Option<Normalization>
+where
+    S: AsRef<str>,
+{
     match value.as_ref() {
         "none" => Some(Normalization::None),
         "nfd" => Some(Normalization::NFD),
         "nfkd" => Some(Normalization::NFKD),
         "nfc" => Some(Normalization::NFC),
         "nfkc" => Some(Normalization::NFKC),
-        _ => None
+        _ => None,
     }
 }
 
@@ -51,7 +53,11 @@ fn main() {
         return;
     }
 
-    let norm = matches.opt_str("u").as_ref().map(|s| normalization_from(s).or_exit("Unknown normalization", 1)).unwrap_or(Normalization::None);
+    let norm = matches
+        .opt_str("u")
+        .as_ref()
+        .map(|s| normalization_from(s).or_exit("Unknown normalization", 1))
+        .unwrap_or(Normalization::None);
 
     let input = Input::from(matches.free.get(0));
     let reader = conllx::Reader::new(or_exit(input.buf_read()));
