@@ -1,64 +1,56 @@
+extern crate clap;
 extern crate colored;
 extern crate conllx;
 extern crate conllx_utils;
 #[macro_use]
 extern crate failure;
-extern crate getopts;
 
 use std::borrow::Cow;
 use std::collections::BTreeSet;
-use std::env::args;
 use std::io::BufRead;
 use std::process;
 
+use clap::{App, Arg};
 use colored::*;
 use conllx::Token;
-use conllx_utils::{open_reader, or_exit, LayerCallback, LAYER_CALLBACKS};
+use conllx_utils::{open_reader, or_exit, LayerCallback, DEFAULT_CLAP_SETTINGS, LAYER_CALLBACKS};
 use failure::Error;
-use getopts::Options;
-
-fn print_usage(program: &str, opts: Options) {
-    let brief = format!("Usage: {} [options] FILE...", program);
-    print!("{}", opts.usage(&brief));
-}
 
 fn main() {
-    let args: Vec<String> = args().collect();
-    let program = args[0].clone();
+    let matches = App::new("conllx-compare")
+        .settings(DEFAULT_CLAP_SETTINGS)
+        .arg(
+            Arg::with_name("layer")
+                .short("l")
+                .long("layer")
+                .value_name("LAYER[,LAYER]*")
+                .help("layer(s) to compare (form, lemma, cpos, pos, features, head, headrel, phead, or pheadrel, default: headrel)")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("show_layer")
+                .short("s")
+                .long("show")
+                .value_name("LAYER[,LAYER]*")
+                .help("extra layer(s) to show from the first file (form, lemma, cpos, pos, features, head, headrel, phead, or pheadrel, default: form)")
+                .takes_value(true),
+        )
+        .arg(Arg::with_name("INPUT1").help("First CoNLL-X file to compare").index(1).required(true))
+        .arg(
+            Arg::with_name("INPUT2")
+                .help("Second CoNLL-X file to compare")
+                .index(2).required(true),
+        )
+        .get_matches();
 
-    let mut opts = Options::new();
-    opts.optflag("h", "help", "print this help menu");
-    opts.optopt(
-        "l",
-        "layer",
-        "layer(s) to compare (form, lemma, cpos, pos, features, \
-         head, headrel, phead, or pheadrel, default: headrel)",
-        "LAYER[,LAYER]",
+    let callbacks = process_callbacks(matches.value_of("layer"), vec![&LAYER_CALLBACKS["headrel"]]);
+    let show_callbacks = process_callbacks(
+        matches.value_of("show_layer"),
+        vec![&LAYER_CALLBACKS["form"]],
     );
-    opts.optopt(
-        "s",
-        "show",
-        "extra layer(s) to show from first file (form, lemma, cpos, \
-         pos, features, head, headrel, phead, or pheadrel, default: form)",
-        "LAYER[,LAYER]",
-    );
-    let matches = or_exit(opts.parse(&args[1..]));
 
-    if matches.opt_present("h") {
-        print_usage(&program, opts);
-        return;
-    }
-
-    let callbacks = process_callbacks(matches.opt_str("l"), vec![&LAYER_CALLBACKS["headrel"]]);
-    let show_callbacks = process_callbacks(matches.opt_str("s"), vec![&LAYER_CALLBACKS["form"]]);
-
-    if matches.free.len() != 2 {
-        print_usage(&program, opts);
-        return;
-    }
-
-    let reader1 = or_exit(open_reader(&matches.free[0]));
-    let reader2 = or_exit(open_reader(&matches.free[1]));
+    let reader1 = or_exit(open_reader(matches.value_of("INPUT1").unwrap()));
+    let reader2 = or_exit(open_reader(matches.value_of("INPUT2").unwrap()));
 
     or_exit(compare_sentences(
         reader1,
@@ -69,7 +61,7 @@ fn main() {
 }
 
 fn process_callbacks(
-    callback_option: Option<String>,
+    callback_option: Option<&str>,
     default: Vec<&'static LayerCallback>,
 ) -> Vec<&'static LayerCallback> {
     if callback_option.is_none() {

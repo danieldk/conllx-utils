@@ -40,13 +40,15 @@ where
     create_writer(path, compress)
 }
 
-pub fn open_reader<P>(path: &P) -> io::Result<conllx::Reader<Box<BufRead>>>
+pub fn open_reader<P>(path: P) -> io::Result<conllx::Reader<Box<BufRead>>>
 where
     P: AsRef<Path>,
 {
+    let path = path.as_ref();
+
     let reader = File::open(path)?;
 
-    let boxed_reader: Box<BufRead> = if path.as_ref().extension() == Some(OsStr::new("gz")) {
+    let boxed_reader: Box<BufRead> = if path.extension() == Some(OsStr::new("gz")) {
         Box::new(BufReader::new(GzDecoder::new(reader)?))
     } else {
         Box::new(BufReader::new(reader))
