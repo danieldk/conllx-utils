@@ -8,9 +8,15 @@ use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::Path;
 use std::process;
 
+use clap::AppSettings;
 use flate2::Compression;
 use flate2::read::GzDecoder;
 use flate2::write::GzEncoder;
+
+pub static DEFAULT_CLAP_SETTINGS: &[AppSettings] = &[
+    AppSettings::DontCollapseArgsInUsage,
+    AppSettings::UnifiedHelpMessage,
+];
 
 pub fn create_writer<P>(filename: P, gzip: bool) -> io::Result<conllx::Writer<Box<Write>>>
 where

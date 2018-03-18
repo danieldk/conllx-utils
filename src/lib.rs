@@ -1,3 +1,5 @@
+extern crate clap;
+
 extern crate conllx;
 
 extern crate flate2;
@@ -17,7 +19,7 @@ extern crate petgraph;
 extern crate unicode_normalization;
 
 mod cmd;
-pub use cmd::{open_reader, open_writer, or_exit};
+pub use cmd::{open_reader, open_writer, or_exit, DEFAULT_CLAP_SETTINGS};
 
 mod graph;
 pub use graph::{first_matching_edge, sentence_to_graph, DependencyGraph, DependencyNode};
