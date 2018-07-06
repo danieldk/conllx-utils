@@ -68,7 +68,7 @@ dependencies = [
 
 [[package]]
 name = "conllx-utils"
-version = "0.4.1"
+version = "0.4.2"
 dependencies = [
  "colored 1.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "conllx 0.10.2 (registry+https://github.com/rust-lang/crates.io-index)",
