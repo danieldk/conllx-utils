@@ -52,7 +52,9 @@ fn main() {
 }
 
 fn expand(sentence: &mut Sentence, preserve_orig: bool) {
-    for token in sentence {
-        or_exit(expand_tdz_morph(token, preserve_orig))
+    for node in sentence {
+        if let Some(token) = node.token_mut() {
+            or_exit(expand_tdz_morph(token, preserve_orig));
+        }
     }
 }

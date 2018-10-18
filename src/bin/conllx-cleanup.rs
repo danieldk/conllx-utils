@@ -6,7 +6,7 @@ extern crate stdinout;
 use std::env::args;
 use std::io::BufWriter;
 
-use conllx::{Sentence, WriteSentence};
+use conllx::{Node, Sentence, WriteSentence};
 use conllx_utils::{or_exit, simplify_unicode, Normalization};
 use getopts::Options;
 use stdinout::{Input, OrExit, Output};
@@ -73,7 +73,9 @@ fn main() {
 
 fn cleanup(sentence: &mut Sentence, norm: Normalization) {
     for token in sentence {
-        let clean_form = simplify_unicode(token.form(), norm);
-        token.set_form(clean_form);
+        if let Node::Token(token) = token {
+            let clean_form = simplify_unicode(token.form(), norm);
+            token.set_form(clean_form);
+        }
     }
 }

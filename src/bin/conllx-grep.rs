@@ -9,7 +9,7 @@ use std::env::args;
 use std::io::BufWriter;
 use std::process;
 
-use conllx::{Features, Sentence, WriteSentence};
+use conllx::{Node, Features, Sentence, WriteSentence, Token};
 use conllx_utils::{or_exit, LayerCallback, LAYER_CALLBACKS};
 use getopts::Options;
 use regex::Regex;
@@ -82,12 +82,15 @@ fn main() {
 
         if let Some(ref feature) = mark_feature {
             for idx in matches {
-                let mut features = sentence[idx]
-                    .features()
+                let mut features = sentence[idx].token().and_then(Token::features)
                     .map(|f| f.as_map().clone())
                     .unwrap_or(BTreeMap::new());
                 features.insert(feature.clone(), None);
-                sentence[idx].set_features(Some(Features::from_iter(features)));
+                match sentence[idx] {
+                    Node::Root => unreachable!(),
+                    Node::Token(ref mut token) =>
+                        token.set_features(Some(Features::from_iter(features))),
+                };
             }
         }
 
@@ -98,8 +101,8 @@ fn main() {
 fn match_indexes(re: &Regex, callback: &LayerCallback, sentence: &Sentence) -> HashSet<usize> {
     let mut indexes = HashSet::new();
 
-    for (idx, token) in sentence.iter().enumerate() {
-        if let Some(token) = callback(token) {
+    for (idx, node) in sentence.iter().enumerate() {
+        if let Some(token) = node.token().and_then(callback) {
             if re.is_match(token.as_ref()) {
                 indexes.insert(idx);
             }

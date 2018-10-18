@@ -44,12 +44,14 @@ fn main() {
     let output = Output::from(matches.free.get(1));
     let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
     for sentence in reader {
-        let sentence = or_exit(sentence);
+        let mut sentence = or_exit(sentence);
 
         if deproj {
-            or_exit(writer.write_sentence(&or_exit(projectivizer.deprojectivize(&sentence))));
+            or_exit(projectivizer.deprojectivize(&mut sentence));
+            or_exit(writer.write_sentence(&sentence));
         } else {
-            or_exit(writer.write_sentence(&or_exit(projectivizer.projectivize(&sentence))));
+            or_exit(projectivizer.projectivize(&mut sentence));
+            or_exit(writer.write_sentence(&sentence));
         }
     }
 }

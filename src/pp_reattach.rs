@@ -1,11 +1,6 @@
 use std::collections::HashSet;
 
-use conllx::Sentence;
-use petgraph::graph::NodeIndex;
-use petgraph::visit::EdgeRef;
-use petgraph::EdgeDirection;
-
-use {first_matching_edge, sentence_to_graph, DependencyGraph};
+use conllx::{DepGraph, DepTriple, Node, Sentence};
 
 macro_rules! ok_or_continue {
     ($expr:expr) => {
@@ -33,21 +28,20 @@ lazy_static! {
 /// these are normally topicalized PPs.
 pub fn reattach_aux_pps(sentence: &mut Sentence) {
     let updates = find_reattachments(&sentence);
+    let mut g = sentence.graph_mut();
 
-    for (prep_offset, new_head) in updates {
-        sentence[prep_offset].set_head(Some(new_head + 1));
+    for triple in updates {
+        g.add_deprel(triple);
     }
 }
 
 /// Given a node `verb` that represents a verb, find the content
 /// (non-auxiliary/model) verb. If the given verb is already a
 /// content verb, the index of the verb itself is returned.
-fn resolve_verb(graph: &DependencyGraph, verb: NodeIndex) -> NodeIndex {
+fn resolve_verb(graph: &DepGraph, verb: usize) -> usize {
     // Look for non-aux.
-    match first_matching_edge(graph, verb, EdgeDirection::Outgoing, |e| {
-        *e == Some(AUXILIARY_RELATION)
-    }) {
-        Some(idx) => resolve_verb(graph, idx),
+    match graph.dependents(verb).filter(|t| t.relation() == Some(AUXILIARY_RELATION)).next() {
+        Some(triple) => resolve_verb(graph, triple.head()),
         None => verb,
     }
 }
@@ -57,34 +51,36 @@ fn resolve_verb(graph: &DependencyGraph, verb: NodeIndex) -> NodeIndex {
 ///
 /// 1. The index into the sentence of a PP requiring re-attachment.
 /// 2. The index into the sentence of the re-attachment site.
-fn find_reattachments(sentence: &Sentence) -> Vec<(usize, usize)> {
-    let graph = sentence_to_graph(&sentence, false);
-
+fn find_reattachments(sentence: &Sentence) -> Vec<DepTriple<String>> {
     let mut updates = Vec::new();
+    let g = sentence.graph();
 
-    for edge_ref in graph.edge_references() {
+    for i in 0..sentence.len() {
+        let triple = ok_or_continue!(g.head(i));
+
         // Skip unlabeled edges.
-        let weight = ok_or_continue!(*edge_ref.weight());
+        let rel = ok_or_continue!(triple.relation());
 
         // We are only interested in PP/OBJP edges.
-        if !PP_RELATIONS.contains(weight) {
+        if !PP_RELATIONS.contains(rel) {
             continue;
         }
 
-        let head_node = &graph[edge_ref.source()];
+        let head = if let Node::Token(ref token) = sentence[triple.head()] {
+            token
+        } else {
+            continue
+        };
 
         // Check that the head is a verb.
-        let tag = ok_or_continue!(head_node.token.pos());
+        let tag = ok_or_continue!(head.pos());
         if !tag.starts_with(VERB_PREFIX) {
             continue;
         }
 
-        let content_verb_idx = resolve_verb(&graph, edge_ref.source());
-        if content_verb_idx != edge_ref.source() {
-            let prep_offset = graph[edge_ref.target()].offset;
-            let content_verb_offset = graph[content_verb_idx].offset;
-
-            updates.push((prep_offset, content_verb_offset));
+        let content_verb_idx = resolve_verb(&g, triple.head());
+        if content_verb_idx != triple.head() {
+            updates.push(DepTriple::new(content_verb_idx, triple.relation().map(ToOwned::to_owned), triple.dependent()));
         }
     }
 

@@ -116,7 +116,7 @@ impl fmt::Display for MorphError {
 }
 
 pub fn expand_tdz_morph(token: &mut Token, preserve_orig: bool) -> Result<(), MorphError> {
-    let expanded_features = try!(expand_features(token, preserve_orig));
+    let expanded_features = expand_features(token, preserve_orig)?;
     if expanded_features.is_some() {
         token.set_features(expanded_features);
     };

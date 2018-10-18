@@ -7,7 +7,7 @@ extern crate stdinout;
 
 use std::env::args;
 
-use conllx::{DisplaySentence, Sentence};
+use conllx::Sentence;
 use conllx_utils::or_exit;
 use getopts::Options;
 use itertools::Itertools;
@@ -49,29 +49,20 @@ fn main() {
 }
 
 fn check_cycles(sentence: &Sentence, projective: bool) {
-    let edges = sentence.iter().enumerate().filter_map(|(idx, token)| {
-        let head = if projective {
-            token.p_head()
-        } else {
-            token.head()
-        };
-
-        match head {
-            Some(head) => Some((node_index(head), node_index(idx + 1))),
-            None => None,
-        }
-    });
-
-    let dep_graph = Graph::<(), (), Directed>::from_edges(edges);
+    let dep_graph = if projective {
+        sentence.proj_graph()
+    } else {
+        sentence.graph()
+    };
+    
     let mut sentence_printed = false;
-
-    for component in kosaraju_scc(&dep_graph) {
+    for component in kosaraju_scc(dep_graph) {
         if component.len() == 1 {
             continue;
         }
 
         if !sentence_printed {
-            println!("{}\n", DisplaySentence(sentence));
+            println!("{}\n", sentence);
             sentence_printed = true
         }
 

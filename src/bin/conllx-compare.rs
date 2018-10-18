@@ -12,7 +12,7 @@ use std::io::BufRead;
 use std::process;
 
 use colored::*;
-use conllx::Token;
+use conllx::{Sentence};
 use conllx_utils::{open_reader, or_exit, LayerCallback, LAYER_CALLBACKS};
 use failure::Error;
 use getopts::Options;
@@ -111,25 +111,25 @@ fn compare_sentences(
 }
 
 fn print_diff(
-    tokens1: &[Token],
-    tokens2: &[Token],
+    sent1: &Sentence,
+    sent2: &Sentence,
     diff_callbacks: &[&LayerCallback],
     show_callbacks: &[&LayerCallback],
 ) {
-    for idx in 0..tokens1.len() {
+    for idx in 1..sent1.len() {
         let mut columns = Vec::new();
 
         for callback in show_callbacks {
             columns.push(
-                callback(&tokens1[idx])
+                sent1[idx].token().and_then(callback)
                     .unwrap_or(Cow::Borrowed("_"))
                     .into_owned(),
             );
         }
 
         for callback in diff_callbacks {
-            let col1 = callback(&tokens1[idx]).unwrap_or(Cow::Borrowed("_"));
-            let col2 = callback(&tokens2[idx]).unwrap_or(Cow::Borrowed("_"));
+            let col1 = sent1[idx].token().and_then(callback).unwrap_or(Cow::Borrowed("_"));
+            let col2 = sent2[idx].token().and_then(callback).unwrap_or(Cow::Borrowed("_"));
 
             if col1 != col2 {
                 columns.push(format!("{}", col1.red()));
@@ -145,8 +145,8 @@ fn print_diff(
 }
 
 fn diff_indices(
-    tokens1: &[Token],
-    tokens2: &[Token],
+    tokens1: &Sentence,
+    tokens2: &Sentence,
     diff_callbacks: &[&LayerCallback],
 ) -> Result<BTreeSet<usize>, Error> {
     ensure!(
@@ -158,9 +158,9 @@ fn diff_indices(
 
     let mut indices = BTreeSet::new();
 
-    'tokenloop: for i in 0..tokens1.len() {
+    'tokenloop: for i in 1..tokens1.len() {
         for layer_callback in diff_callbacks {
-            if layer_callback(&tokens1[i]) != layer_callback(&tokens2[i]) {
+            if tokens1[i].token().and_then(layer_callback) != tokens2[i].token().and_then(layer_callback) {
                 indices.insert(i);
                 continue 'tokenloop;
             }
