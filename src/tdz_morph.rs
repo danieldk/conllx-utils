@@ -30,76 +30,73 @@ const UNDERSPECIFIED_SHORT: char = '*';
 const UNDERSPECIFIED_LONG: &'static str = "underspecified";
 
 lazy_static! {
-    static ref TAG_ATTRIBUTES: HashMap<&'static str, Vec<MorphAttribute>> =
-        hashmap!{
-            "ADJA" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "APPR" => vec![MorphAttribute::Case],
-            "APPRART" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "APPO" => vec![MorphAttribute::Case],
-            "ART" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "NN" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "NE" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "PDS" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "PDAT" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "PIS" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "PIAT" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "PIDAT" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "PPER" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender,
-                MorphAttribute::Person],
-            "PPOSS" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "PPOSAT" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "PRELS" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "PRELAT" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "PRF" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender,
-                MorphAttribute::Person],
-            "PWS" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "PWAT" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
-            "VAFIN" => vec![MorphAttribute::Person, MorphAttribute::Number, MorphAttribute::Mood,
-                MorphAttribute::Tense],
-            "VAIMP" => vec![MorphAttribute::Number],
-            "VMFIN" => vec![MorphAttribute::Person, MorphAttribute::Number, MorphAttribute::Mood,
-                MorphAttribute::Tense],
-            "VVFIN" => vec![MorphAttribute::Person, MorphAttribute::Number, MorphAttribute::Mood,
-                MorphAttribute::Tense],
-            "VVIMP" => vec![MorphAttribute::Number],
-        };
-
-    static ref MORPH_LONG_NAMES: HashMap<MorphAttribute, HashMap<char, &'static str>> =
-        hashmap!{
-            MorphAttribute::Case => hashmap!{
-                'n' => "nominative",
-                'g' => "genitive",
-                'd' => "dative",
-                'a' => "accusative",
-                UNDERSPECIFIED_SHORT => UNDERSPECIFIED_LONG
-            },
-            MorphAttribute::Gender => hashmap!{
-                'm' => "masculine",
-                'f' => "feminine",
-                'n' => "neuter",
-                UNDERSPECIFIED_SHORT => UNDERSPECIFIED_LONG
-            },
-            MorphAttribute::Number => hashmap!{
-                's' => "singular",
-                'p' => "plural",
-                UNDERSPECIFIED_SHORT => UNDERSPECIFIED_LONG
-            },
-            MorphAttribute::Mood => hashmap!{
-                'i' => "indicative",
-                'k' => "subjunctive",
-            },
-            MorphAttribute::Person => hashmap!{
-                '1' => "1",
-                '2' => "2",
-                '3' => "3",
-                UNDERSPECIFIED_SHORT => UNDERSPECIFIED_LONG
-            },
-            MorphAttribute::Tense => hashmap!{
-                's' => "present",
-                't' => "past",
-                UNDERSPECIFIED_SHORT => UNDERSPECIFIED_LONG
-            }
-        };
+    static ref TAG_ATTRIBUTES: HashMap<&'static str, Vec<MorphAttribute>> = hashmap!{
+        "ADJA" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "APPR" => vec![MorphAttribute::Case],
+        "APPRART" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "APPO" => vec![MorphAttribute::Case],
+        "ART" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "NN" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "NE" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "PDS" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "PDAT" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "PIS" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "PIAT" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "PIDAT" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "PPER" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender,
+            MorphAttribute::Person],
+        "PPOSS" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "PPOSAT" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "PRELS" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "PRELAT" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "PRF" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender,
+            MorphAttribute::Person],
+        "PWS" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "PWAT" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
+        "VAFIN" => vec![MorphAttribute::Person, MorphAttribute::Number, MorphAttribute::Mood,
+            MorphAttribute::Tense],
+        "VAIMP" => vec![MorphAttribute::Number],
+        "VMFIN" => vec![MorphAttribute::Person, MorphAttribute::Number, MorphAttribute::Mood,
+            MorphAttribute::Tense],
+        "VVFIN" => vec![MorphAttribute::Person, MorphAttribute::Number, MorphAttribute::Mood,
+            MorphAttribute::Tense],
+        "VVIMP" => vec![MorphAttribute::Number],
+    };
+    static ref MORPH_LONG_NAMES: HashMap<MorphAttribute, HashMap<char, &'static str>> = hashmap!{
+        MorphAttribute::Case => hashmap!{
+            'n' => "nominative",
+            'g' => "genitive",
+            'd' => "dative",
+            'a' => "accusative",
+            UNDERSPECIFIED_SHORT => UNDERSPECIFIED_LONG
+        },
+        MorphAttribute::Gender => hashmap!{
+            'm' => "masculine",
+            'f' => "feminine",
+            'n' => "neuter",
+            UNDERSPECIFIED_SHORT => UNDERSPECIFIED_LONG
+        },
+        MorphAttribute::Number => hashmap!{
+            's' => "singular",
+            'p' => "plural",
+            UNDERSPECIFIED_SHORT => UNDERSPECIFIED_LONG
+        },
+        MorphAttribute::Mood => hashmap!{
+            'i' => "indicative",
+            'k' => "subjunctive",
+        },
+        MorphAttribute::Person => hashmap!{
+            '1' => "1",
+            '2' => "2",
+            '3' => "3",
+            UNDERSPECIFIED_SHORT => UNDERSPECIFIED_LONG
+        },
+        MorphAttribute::Tense => hashmap!{
+            's' => "present",
+            't' => "past",
+            UNDERSPECIFIED_SHORT => UNDERSPECIFIED_LONG
+        }
+    };
 }
 
 pub enum MorphError {

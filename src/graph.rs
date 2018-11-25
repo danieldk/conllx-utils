@@ -1,7 +1,7 @@
 use conllx::{Sentence, Token};
-use petgraph::{Directed, EdgeDirection, Graph};
 use petgraph::graph::NodeIndex;
 use petgraph::visit::EdgeRef;
+use petgraph::{Directed, EdgeDirection, Graph};
 
 #[derive(Debug)]
 pub struct DependencyNode<'a> {
@@ -22,8 +22,7 @@ pub fn sentence_to_graph(sentence: &Sentence, projective: bool) -> DependencyGra
                 token: token,
                 offset: offset,
             })
-        })
-        .collect();
+        }).collect();
 
     for (idx, token) in sentence.iter().enumerate() {
         let head = if projective {

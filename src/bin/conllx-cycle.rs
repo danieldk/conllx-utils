@@ -11,9 +11,9 @@ use conllx::{DisplaySentence, Sentence};
 use conllx_utils::or_exit;
 use getopts::Options;
 use itertools::Itertools;
-use petgraph::{Directed, Graph};
-use petgraph::graph::node_index;
 use petgraph::algo::kosaraju_scc;
+use petgraph::graph::node_index;
+use petgraph::{Directed, Graph};
 use stdinout::Input;
 
 fn print_usage(program: &str, opts: Options) {

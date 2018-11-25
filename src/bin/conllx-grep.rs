@@ -59,8 +59,7 @@ fn main() {
                 println!("Unknown layer: {}", layer);
                 process::exit(1)
             }
-        })
-        .unwrap_or(&LAYER_CALLBACKS["form"]);
+        }).unwrap_or(&LAYER_CALLBACKS["form"]);
 
     if matches.free.len() == 0 || matches.free.len() > 3 {
         print_usage(&program, opts);

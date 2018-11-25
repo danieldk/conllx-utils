@@ -52,8 +52,7 @@ fn main() {
                 println!("Unknown layer: {}", layer);
                 process::exit(1)
             }
-        })
-        .unwrap_or(&LAYER_CALLBACKS["form"]);
+        }).unwrap_or(&LAYER_CALLBACKS["form"]);
 
     let input = Input::from(matches.free.get(0));
     let reader = conllx::Reader::new(input.buf_read().or_exit("Cannot open input", 1));

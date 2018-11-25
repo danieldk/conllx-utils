@@ -1,17 +1,19 @@
 use std::collections::HashSet;
 
 use conllx::Sentence;
-use petgraph::EdgeDirection;
 use petgraph::graph::NodeIndex;
 use petgraph::visit::EdgeRef;
+use petgraph::EdgeDirection;
 
 use {first_matching_edge, sentence_to_graph, DependencyGraph};
 
 macro_rules! ok_or_continue {
-    ($expr:expr) => (match $expr {
-        Some(val) => val,
-        None => continue,
-    })
+    ($expr:expr) => {
+        match $expr {
+            Some(val) => val,
+            None => continue,
+        }
+    };
 }
 
 static AUXILIARY_RELATION: &'static str = "AUX";
