@@ -71,9 +71,10 @@ fn main() {
                 .skip(1)
                 .map(|n| {
                     let token = n.token().expect("Expected token");
-                    callback(token).map(Cow::into_owned).unwrap_or("_".to_owned())
-                })
-                .join(" ")
+                    callback(token)
+                        .map(Cow::into_owned)
+                        .unwrap_or("_".to_owned())
+                }).join(" ")
         ).or_exit("Cannot write sentence", 1);
     }
 }

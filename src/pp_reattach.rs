@@ -40,8 +40,12 @@ pub fn reattach_aux_pps(sentence: &mut Sentence) {
 /// content verb, the index of the verb itself is returned.
 fn resolve_verb(graph: &DepGraph, verb: usize) -> usize {
     // Look for non-aux.
-    match graph.dependents(verb).filter(|t| t.relation() == Some(AUXILIARY_RELATION)).next() {
-        Some(triple) => resolve_verb(graph, triple.head()),
+    match graph
+        .dependents(verb)
+        .filter(|t| t.relation() == Some(AUXILIARY_RELATION))
+        .next()
+    {
+        Some(triple) => resolve_verb(graph, triple.dependent()),
         None => verb,
     }
 }
@@ -69,7 +73,7 @@ fn find_reattachments(sentence: &Sentence) -> Vec<DepTriple<String>> {
         let head = if let Node::Token(ref token) = sentence[triple.head()] {
             token
         } else {
-            continue
+            continue;
         };
 
         // Check that the head is a verb.
@@ -80,7 +84,11 @@ fn find_reattachments(sentence: &Sentence) -> Vec<DepTriple<String>> {
 
         let content_verb_idx = resolve_verb(&g, triple.head());
         if content_verb_idx != triple.head() {
-            updates.push(DepTriple::new(content_verb_idx, triple.relation().map(ToOwned::to_owned), triple.dependent()));
+            updates.push(DepTriple::new(
+                content_verb_idx,
+                triple.relation().map(ToOwned::to_owned),
+                triple.dependent(),
+            ));
         }
     }
 

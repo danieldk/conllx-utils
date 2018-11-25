@@ -7,6 +7,7 @@ extern crate stdinout;
 use std::env::args;
 use std::io::{BufWriter, Write};
 
+use conllx::Token;
 use getopts::Options;
 use stdinout::{Input, OrExit, Output};
 
@@ -50,25 +51,22 @@ fn main() {
 
     for sentence in reader {
         let sentence = sentence.or_exit("Cannot read sentence", 1);
+        let graph = sentence.graph();
 
-        for (idx, dep) in sentence.iter().enumerate() {
-            let head = ok_or!(dep.head(), continue);
-            let head_rel = ok_or!(dep.head_rel(), continue);
-
-            let head_form = if head == 0 {
-                "ROOT"
-            } else {
-                sentence[head - 1].form()
-            };
+        for idx in 0..graph.len() {
+            let triple = ok_or!(graph.head(idx), continue);
 
             writeln!(
                 writer,
                 "{}\t{}\t{}\t{}\t{}",
-                head,
-                head_form,
-                head_rel,
-                idx + 1,
-                dep.form()
+                triple.head(),
+                sentence[triple.head()]
+                    .token()
+                    .map(Token::form)
+                    .unwrap_or("ROOT"),
+                triple.relation().unwrap_or("_"),
+                idx,
+                sentence[idx].token().map(Token::form).unwrap_or("ROOT"),
             );
         }
     }

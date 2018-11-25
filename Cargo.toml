@@ -4,7 +4,7 @@ version = "0.4.2"
 authors = ["Daniël de Kok <me@danieldk.eu>"]
 
 [dependencies]
-conllx = "0.10"
+conllx = { path = "../conllx-rs" }
 colored = "1.4"
 failure = "0.1"
 flate2 = "0.2"

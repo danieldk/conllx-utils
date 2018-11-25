@@ -9,7 +9,7 @@ use std::env::args;
 use std::io::BufWriter;
 use std::process;
 
-use conllx::{Node, Features, Sentence, WriteSentence, Token};
+use conllx::{Features, Node, Sentence, Token, WriteSentence};
 use conllx_utils::{or_exit, LayerCallback, LAYER_CALLBACKS};
 use getopts::Options;
 use regex::Regex;
@@ -82,14 +82,17 @@ fn main() {
 
         if let Some(ref feature) = mark_feature {
             for idx in matches {
-                let mut features = sentence[idx].token().and_then(Token::features)
+                let mut features = sentence[idx]
+                    .token()
+                    .and_then(Token::features)
                     .map(|f| f.as_map().clone())
                     .unwrap_or(BTreeMap::new());
                 features.insert(feature.clone(), None);
                 match sentence[idx] {
                     Node::Root => unreachable!(),
-                    Node::Token(ref mut token) =>
-                        token.set_features(Some(Features::from_iter(features))),
+                    Node::Token(ref mut token) => {
+                        token.set_features(Some(Features::from_iter(features)))
+                    }
                 };
             }
         }

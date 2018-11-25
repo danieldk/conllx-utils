@@ -6,16 +6,15 @@ use conllx::{Features, Token};
 pub type LayerCallback = fn(&Token) -> Option<Cow<str>>;
 
 lazy_static! {
-    pub static ref LAYER_CALLBACKS: HashMap<&'static str, LayerCallback> =
-        {
-            let mut m: HashMap<&'static str, LayerCallback> = HashMap::new();
-            m.insert("cpos", cpos);
-            m.insert("features", features);
-            m.insert("form", form);
-            m.insert("lemma", lemma);
-            m.insert("pos", pos);
-            m
-        };
+    pub static ref LAYER_CALLBACKS: HashMap<&'static str, LayerCallback> = {
+        let mut m: HashMap<&'static str, LayerCallback> = HashMap::new();
+        m.insert("cpos", cpos);
+        m.insert("features", features);
+        m.insert("form", form);
+        m.insert("lemma", lemma);
+        m.insert("pos", pos);
+        m
+    };
 }
 
 fn cpos(t: &Token) -> Option<Cow<str>> {

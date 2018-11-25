@@ -7,13 +7,13 @@ extern crate stdinout;
 
 use std::env::args;
 
+use conllx::Projectivity;
 use conllx::Sentence;
 use conllx_utils::or_exit;
 use getopts::Options;
 use itertools::Itertools;
-use petgraph::algo::kosaraju_scc;
-use petgraph::graph::node_index;
-use petgraph::{Directed, Graph};
+use petgraph::algo::tarjan_scc;
+use petgraph::visit::EdgeFiltered;
 use stdinout::Input;
 
 fn print_usage(program: &str, opts: Options) {
@@ -44,19 +44,22 @@ fn main() {
     let reader = conllx::Reader::new(or_exit(input.buf_read()));
     for sentence in reader {
         let sentence = or_exit(sentence);
-        check_cycles(&sentence, matches.opt_present("p"))
+
+        let projectivity = if matches.opt_present("p") {
+            Projectivity::Projective
+        } else {
+            Projectivity::NonProjective
+        };
+
+        check_cycles(&sentence, projectivity);
     }
 }
 
-fn check_cycles(sentence: &Sentence, projective: bool) {
-    let dep_graph = if projective {
-        sentence.proj_graph()
-    } else {
-        sentence.graph()
-    };
-    
+fn check_cycles(sentence: &Sentence, projectivity: Projectivity) {
+    let dep_graph = EdgeFiltered::from_fn(sentence.get_ref(), |e| e.weight().0 == projectivity);
+
     let mut sentence_printed = false;
-    for component in kosaraju_scc(dep_graph) {
+    for component in tarjan_scc(&dep_graph) {
         if component.len() == 1 {
             continue;
         }

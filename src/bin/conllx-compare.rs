@@ -12,7 +12,7 @@ use std::io::BufRead;
 use std::process;
 
 use colored::*;
-use conllx::{Sentence};
+use conllx::Sentence;
 use conllx_utils::{open_reader, or_exit, LayerCallback, LAYER_CALLBACKS};
 use failure::Error;
 use getopts::Options;
@@ -121,15 +121,23 @@ fn print_diff(
 
         for callback in show_callbacks {
             columns.push(
-                sent1[idx].token().and_then(callback)
+                sent1[idx]
+                    .token()
+                    .and_then(callback)
                     .unwrap_or(Cow::Borrowed("_"))
                     .into_owned(),
             );
         }
 
         for callback in diff_callbacks {
-            let col1 = sent1[idx].token().and_then(callback).unwrap_or(Cow::Borrowed("_"));
-            let col2 = sent2[idx].token().and_then(callback).unwrap_or(Cow::Borrowed("_"));
+            let col1 = sent1[idx]
+                .token()
+                .and_then(callback)
+                .unwrap_or(Cow::Borrowed("_"));
+            let col2 = sent2[idx]
+                .token()
+                .and_then(callback)
+                .unwrap_or(Cow::Borrowed("_"));
 
             if col1 != col2 {
                 columns.push(format!("{}", col1.red()));
@@ -160,7 +168,9 @@ fn diff_indices(
 
     'tokenloop: for i in 1..tokens1.len() {
         for layer_callback in diff_callbacks {
-            if tokens1[i].token().and_then(layer_callback) != tokens2[i].token().and_then(layer_callback) {
+            if tokens1[i].token().and_then(layer_callback)
+                != tokens2[i].token().and_then(layer_callback)
+            {
                 indices.insert(i);
                 continue 'tokenloop;
             }
