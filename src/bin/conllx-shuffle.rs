@@ -7,7 +7,7 @@ extern crate stdinout;
 use std::env::args;
 use std::io::BufWriter;
 
-use conllx::WriteSentence;
+use conllx::io::{Reader, WriteSentence, Writer};
 use conllx_utils::or_exit;
 use getopts::Options;
 use rand::{Rng, SeedableRng, XorShiftRng};
@@ -49,10 +49,10 @@ fn main() {
     let mut rng = XorShiftRng::from_seed(seed);
 
     let input = Input::from(matches.free.get(0));
-    let reader = conllx::Reader::new(or_exit(input.buf_read()));
+    let reader = Reader::new(or_exit(input.buf_read()));
 
     let output = Output::from(matches.free.get(1));
-    let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
+    let mut writer = Writer::new(BufWriter::new(or_exit(output.write())));
 
     let mut sents: Vec<_> = reader
         .into_iter()

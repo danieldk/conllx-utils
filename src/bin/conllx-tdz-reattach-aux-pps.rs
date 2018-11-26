@@ -6,7 +6,7 @@ extern crate stdinout;
 use std::env::args;
 use std::io::BufWriter;
 
-use conllx::WriteSentence;
+use conllx::io::{Reader, WriteSentence, Writer};
 use conllx_utils::reattach_aux_pps;
 use getopts::Options;
 use stdinout::{Input, OrExit, Output};
@@ -35,10 +35,10 @@ fn main() {
     }
 
     let input = Input::from(matches.free.get(0));
-    let reader = conllx::Reader::new(input.buf_read().or_exit("Cannot open input for reading", 1));
+    let reader = Reader::new(input.buf_read().or_exit("Cannot open input for reading", 1));
 
     let output = Output::from(matches.free.get(1));
-    let mut writer = conllx::Writer::new(BufWriter::new(
+    let mut writer = Writer::new(BufWriter::new(
         output.write().or_exit("Cannot open output for writing", 1),
     ));
 

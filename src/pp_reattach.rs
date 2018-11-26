@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use conllx::{DepGraph, DepTriple, Node, Sentence};
+use conllx::graph::{DepGraph, DepTriple, Node, Sentence};
 
 macro_rules! ok_or_continue {
     ($expr:expr) => {
@@ -100,7 +100,7 @@ mod tests {
     use std::fs::File;
     use std::io::BufReader;
 
-    use conllx::{ReadSentence, Reader};
+    use conllx::io::{ReadSentence, Reader};
 
     use reattach_aux_pps;
 

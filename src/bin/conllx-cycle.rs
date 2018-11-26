@@ -7,8 +7,8 @@ extern crate stdinout;
 
 use std::env::args;
 
-use conllx::Projectivity;
-use conllx::Sentence;
+use conllx::graph::{Projectivity, Sentence};
+use conllx::io::Reader;
 use conllx_utils::or_exit;
 use getopts::Options;
 use itertools::Itertools;
@@ -41,7 +41,7 @@ fn main() {
     }
 
     let input = Input::from(matches.free.get(0));
-    let reader = conllx::Reader::new(or_exit(input.buf_read()));
+    let reader = Reader::new(or_exit(input.buf_read()));
     for sentence in reader {
         let sentence = or_exit(sentence);
 

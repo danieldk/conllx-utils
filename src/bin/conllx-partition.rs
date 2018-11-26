@@ -6,7 +6,7 @@ extern crate stdinout;
 use std::env::args;
 use std::io::BufRead;
 
-use conllx::{PartitioningWriter, WriteSentence};
+use conllx::io::{PartitioningWriter, Reader, WriteSentence};
 use conllx_utils::{open_writer, or_exit};
 use getopts::Options;
 use stdinout::Input;
@@ -39,7 +39,7 @@ fn main() {
     let suffix = &matches.free[2];
 
     let input = Input::from(matches.free.get(3));
-    let reader = conllx::Reader::new(or_exit(input.buf_read()));
+    let reader = Reader::new(or_exit(input.buf_read()));
 
     let writers: Vec<_> = (0..n)
         .map(|part| or_exit(open_writer(&format!("{}{}{}", prefix, part, suffix))))
@@ -50,7 +50,7 @@ fn main() {
     copy_sents(reader, writer)
 }
 
-fn copy_sents<R, W>(reader: conllx::Reader<R>, mut writer: W)
+fn copy_sents<R, W>(reader: Reader<R>, mut writer: W)
 where
     R: BufRead,
     W: WriteSentence,

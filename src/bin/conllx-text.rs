@@ -9,6 +9,7 @@ use std::env::args;
 use std::io::{BufWriter, Write};
 use std::process;
 
+use conllx::io::Reader;
 use conllx_utils::LAYER_CALLBACKS;
 use getopts::Options;
 use itertools::Itertools;
@@ -55,7 +56,7 @@ fn main() {
         }).unwrap_or(&LAYER_CALLBACKS["form"]);
 
     let input = Input::from(matches.free.get(0));
-    let reader = conllx::Reader::new(input.buf_read().or_exit("Cannot open input", 1));
+    let reader = Reader::new(input.buf_read().or_exit("Cannot open input", 1));
 
     let output = Output::from(matches.free.get(1));
     let mut writer = BufWriter::new(output.write().or_exit("Cannot open output", 1));

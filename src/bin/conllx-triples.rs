@@ -7,7 +7,8 @@ extern crate stdinout;
 use std::env::args;
 use std::io::{BufWriter, Write};
 
-use conllx::Token;
+use conllx::io::Reader;
+use conllx::token::Token;
 use getopts::Options;
 use stdinout::{Input, OrExit, Output};
 
@@ -44,7 +45,7 @@ fn main() {
     }
 
     let input = Input::from(matches.free.get(0));
-    let reader = conllx::Reader::new(input.buf_read().or_exit("Cannot open input", 1));
+    let reader = Reader::new(input.buf_read().or_exit("Cannot open input", 1));
 
     let output = Output::from(matches.free.get(1));
     let mut writer = BufWriter::new(output.write().or_exit("Cannot open output", 1));

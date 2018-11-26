@@ -1,4 +1,4 @@
-use conllx::{Features, Token};
+use conllx::token::{Features, Token};
 use std::collections::HashMap;
 use std::fmt;
 

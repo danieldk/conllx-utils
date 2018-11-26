@@ -8,7 +8,7 @@ extern crate stdinout;
 use std::env::args;
 use std::io::BufWriter;
 
-use conllx::{ReadSentence, WriteSentence};
+use conllx::io::{ReadSentence, Reader, WriteSentence, Writer};
 use conllx_utils::or_exit;
 use getopts::Options;
 use rand::{Rng, SeedableRng, XorShiftRng};
@@ -44,10 +44,10 @@ fn main() {
     let sample_size = or_exit(matches.free[0].parse());
 
     let input = Input::from(matches.free.get(1));
-    let reader = conllx::Reader::new(or_exit(input.buf_read()));
+    let reader = Reader::new(or_exit(input.buf_read()));
 
     let output = Output::from(matches.free.get(2));
-    let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
+    let mut writer = Writer::new(BufWriter::new(or_exit(output.write())));
 
     let seed = if let Some(seed_str) = matches.opt_str("s") {
         let seed_val: u32 = seed_str

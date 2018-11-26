@@ -1,7 +1,7 @@
 use std::borrow::Cow;
 use std::collections::HashMap;
 
-use conllx::{Features, Token};
+use conllx::token::{Features, Token};
 
 pub type LayerCallback = fn(&Token) -> Option<Cow<str>>;
 

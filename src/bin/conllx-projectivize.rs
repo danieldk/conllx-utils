@@ -6,7 +6,8 @@ extern crate stdinout;
 use std::env::args;
 use std::io::BufWriter;
 
-use conllx::{Deprojectivize, HeadProjectivizer, Projectivize, WriteSentence};
+use conllx::io::{Reader, WriteSentence, Writer};
+use conllx::proj::{Deprojectivize, HeadProjectivizer, Projectivize};
 use conllx_utils::or_exit;
 use getopts::Options;
 use stdinout::{Input, Output};
@@ -39,10 +40,10 @@ fn main() {
     let deproj = matches.opt_present("d");
 
     let input = Input::from(matches.free.get(0));
-    let reader = conllx::Reader::new(or_exit(input.buf_read()));
+    let reader = Reader::new(or_exit(input.buf_read()));
 
     let output = Output::from(matches.free.get(1));
-    let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
+    let mut writer = Writer::new(BufWriter::new(or_exit(output.write())));
     for sentence in reader {
         let mut sentence = or_exit(sentence);
 

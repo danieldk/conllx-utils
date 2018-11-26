@@ -6,7 +6,8 @@ extern crate stdinout;
 use std::env::args;
 use std::io::BufWriter;
 
-use conllx::{Sentence, WriteSentence};
+use conllx::graph::Sentence;
+use conllx::io::{Reader, WriteSentence, Writer};
 use conllx_utils::{expand_tdz_morph, or_exit};
 use getopts::Options;
 use stdinout::{Input, Output};
@@ -40,10 +41,10 @@ fn main() {
     }
 
     let input = Input::from(matches.free.get(0));
-    let reader = conllx::Reader::new(or_exit(input.buf_read()));
+    let reader = Reader::new(or_exit(input.buf_read()));
 
     let output = Output::from(matches.free.get(1));
-    let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
+    let mut writer = Writer::new(BufWriter::new(or_exit(output.write())));
     for sentence in reader {
         let mut sentence = or_exit(sentence);
         expand(&mut sentence, !matches.opt_present("n"));

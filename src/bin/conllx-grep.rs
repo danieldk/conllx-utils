@@ -9,7 +9,9 @@ use std::env::args;
 use std::io::BufWriter;
 use std::process;
 
-use conllx::{Features, Node, Sentence, Token, WriteSentence};
+use conllx::graph::{Node, Sentence};
+use conllx::io::{Reader, WriteSentence, Writer};
+use conllx::token::{Features, Token};
 use conllx_utils::{or_exit, LayerCallback, LAYER_CALLBACKS};
 use getopts::Options;
 use regex::Regex;
@@ -68,10 +70,10 @@ fn main() {
 
     let re = or_exit(Regex::new(&matches.free[0]));
     let input = Input::from(matches.free.get(1));
-    let reader = conllx::Reader::new(or_exit(input.buf_read()));
+    let reader = Reader::new(or_exit(input.buf_read()));
 
     let output = Output::from(matches.free.get(2));
-    let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
+    let mut writer = Writer::new(BufWriter::new(or_exit(output.write())));
     for sentence in reader {
         let mut sentence = or_exit(sentence);
 

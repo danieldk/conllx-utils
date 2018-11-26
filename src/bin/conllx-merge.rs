@@ -7,7 +7,7 @@ use std::env::args;
 use std::fs::File;
 use std::io::{BufReader, BufWriter, Write};
 
-use conllx::WriteSentence;
+use conllx::io::{Reader, WriteSentence, Writer};
 use conllx_utils::or_exit;
 use getopts::Options;
 use stdinout::Output;
@@ -37,12 +37,12 @@ fn main() {
     }
 
     let output = Output::from(matches.opt_str("w").as_ref());
-    let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
+    let mut writer = Writer::new(BufWriter::new(or_exit(output.write())));
 
     copy_sents(&mut writer, &matches.free)
 }
 
-fn copy_sents<W>(writer: &mut conllx::Writer<W>, filenames: &Vec<String>)
+fn copy_sents<W>(writer: &mut Writer<W>, filenames: &Vec<String>)
 where
     W: Write,
 {
@@ -50,7 +50,7 @@ where
         let file = or_exit(File::open(&filename));
         let buf_read = Box::new(BufReader::new(file));
 
-        let reader = conllx::Reader::new(buf_read);
+        let reader = Reader::new(buf_read);
         for sentence in reader {
             let sentence = or_exit(sentence);
             or_exit(writer.write_sentence(&sentence))

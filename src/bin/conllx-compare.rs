@@ -12,7 +12,8 @@ use std::io::BufRead;
 use std::process;
 
 use colored::*;
-use conllx::Sentence;
+use conllx::graph::Sentence;
+use conllx::io::Reader;
 use conllx_utils::{open_reader, or_exit, LayerCallback, LAYER_CALLBACKS};
 use failure::Error;
 use getopts::Options;
@@ -91,8 +92,8 @@ fn process_callbacks(
 }
 
 fn compare_sentences(
-    reader1: conllx::Reader<Box<BufRead>>,
-    reader2: conllx::Reader<Box<BufRead>>,
+    reader1: Reader<Box<BufRead>>,
+    reader2: Reader<Box<BufRead>>,
     diff_callbacks: &[&LayerCallback],
     show_callbacks: &[&LayerCallback],
 ) -> Result<(), Error> {
