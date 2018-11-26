@@ -4,7 +4,7 @@ version = "0.4.2"
 authors = ["Daniël de Kok <me@danieldk.eu>"]
 
 [dependencies]
-conllx = { path = "../conllx-rs" }
+conllx = { git = "https://github.com/danieldk/conllx-rs.git", branch = "graph-repr" }
 colored = "1.4"
 failure = "0.1"
 flate2 = "0.2"

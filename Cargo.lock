@@ -58,6 +58,7 @@ dependencies = [
 [[package]]
 name = "conllx"
 version = "0.10.2"
+source = "git+https://github.com/danieldk/conllx-rs.git?branch=graph-repr#33482912bf39f6d8af26575a81a7c971dae82834"
 dependencies = [
  "failure 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools 0.7.8 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -70,7 +71,7 @@ name = "conllx-utils"
 version = "0.4.2"
 dependencies = [
  "colored 1.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "conllx 0.10.2",
+ "conllx 0.10.2 (git+https://github.com/danieldk/conllx-rs.git?branch=graph-repr)",
  "failure 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "flate2 0.2.20 (registry+https://github.com/rust-lang/crates.io-index)",
  "getopts 0.2.18 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -396,7 +397,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum cc 1.0.25 (registry+https://github.com/rust-lang/crates.io-index)" = "f159dfd43363c4d08055a07703eb7a3406b0dac4d0584d96965a3262db3c9d16"
 "checksum cfg-if 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)" = "082bb9b28e00d3c9d39cc03e64ce4cea0f1bb9b3fde493f0cbc008472d22bdf4"
 "checksum colored 1.6.1 (registry+https://github.com/rust-lang/crates.io-index)" = "dc0a60679001b62fb628c4da80e574b9645ab4646056d7c9018885efffe45533"
-"checksum conllx 0.10.2 (registry+https://github.com/rust-lang/crates.io-index)" = "2acad64842e9c9c0ab2c6d51ce171f657ccdddc83c354d1e40350a5af73ae06e"
+"checksum conllx 0.10.2 (git+https://github.com/danieldk/conllx-rs.git?branch=graph-repr)" = "<none>"
 "checksum difference 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "b3304d19798a8e067e48d8e69b2c37f0b5e9b4e462504ad9e27e9f3fce02bba8"
 "checksum either 1.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "3be565ca5c557d7f59e7cfcf1844f9e3033650c929c6566f511e8005f205c1d0"
 "checksum failure 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)" = "6dd377bcc1b1b7ce911967e3ec24fa19c3224394ec05b54aa7b083d498341ac7"
