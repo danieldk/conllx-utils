@@ -22,7 +22,8 @@ pub fn sentence_to_graph(sentence: &Sentence, projective: bool) -> DependencyGra
                 token: token,
                 offset: offset,
             })
-        }).collect();
+        })
+        .collect();
 
     for (idx, token) in sentence.iter().enumerate() {
         let head = if projective {

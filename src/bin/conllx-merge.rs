@@ -4,11 +4,10 @@ extern crate getopts;
 extern crate stdinout;
 
 use std::env::args;
-use std::fs::File;
-use std::io::{BufReader, BufWriter, Write};
+use std::io::{BufWriter, Write};
 
 use conllx::WriteSentence;
-use conllx_utils::or_exit;
+use conllx_utils::{open_reader, or_exit};
 use getopts::Options;
 use stdinout::Output;
 
@@ -47,10 +46,8 @@ where
     W: Write,
 {
     for filename in filenames {
-        let file = or_exit(File::open(&filename));
-        let buf_read = Box::new(BufReader::new(file));
+        let reader = or_exit(open_reader(&filename));
 
-        let reader = conllx::Reader::new(buf_read);
         for sentence in reader {
             let sentence = or_exit(sentence);
             or_exit(writer.write_sentence(&sentence))

@@ -30,7 +30,7 @@ const UNDERSPECIFIED_SHORT: char = '*';
 const UNDERSPECIFIED_LONG: &'static str = "underspecified";
 
 lazy_static! {
-    static ref TAG_ATTRIBUTES: HashMap<&'static str, Vec<MorphAttribute>> = hashmap!{
+    static ref TAG_ATTRIBUTES: HashMap<&'static str, Vec<MorphAttribute>> = hashmap! {
         "ADJA" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
         "APPR" => vec![MorphAttribute::Case],
         "APPRART" => vec![MorphAttribute::Case, MorphAttribute::Number, MorphAttribute::Gender],
@@ -62,7 +62,7 @@ lazy_static! {
             MorphAttribute::Tense],
         "VVIMP" => vec![MorphAttribute::Number],
     };
-    static ref MORPH_LONG_NAMES: HashMap<MorphAttribute, HashMap<char, &'static str>> = hashmap!{
+    static ref MORPH_LONG_NAMES: HashMap<MorphAttribute, HashMap<char, &'static str>> = hashmap! {
         MorphAttribute::Case => hashmap!{
             'n' => "nominative",
             'g' => "genitive",
