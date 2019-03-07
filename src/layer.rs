@@ -1,58 +1,26 @@
 use std::borrow::Cow;
-use std::collections::HashMap;
 
 use conllx::{Features, Token};
 
-pub type LayerCallback = fn(&Token) -> Option<Cow<str>>;
+pub type LayerCallback = Box<Fn(&Token) -> Option<Cow<str>>>;
 
-lazy_static! {
-    pub static ref LAYER_CALLBACKS: HashMap<&'static str, LayerCallback> = {
-        let mut m: HashMap<&'static str, LayerCallback> = HashMap::new();
-        m.insert("cpos", cpos);
-        m.insert("features", features);
-        m.insert("form", form);
-        m.insert("head", head);
-        m.insert("headrel", head_rel);
-        m.insert("phead", p_head);
-        m.insert("pheadrel", p_head_rel);
-        m.insert("lemma", lemma);
-        m.insert("pos", pos);
-        m
-    };
-}
-
-fn cpos(t: &Token) -> Option<Cow<str>> {
-    t.cpos().map(Cow::Borrowed)
-}
-
-fn features(t: &Token) -> Option<Cow<str>> {
-    t.features().map(Features::as_str).map(Cow::Borrowed)
-}
-
-fn form(t: &Token) -> Option<Cow<str>> {
-    Some(Cow::Borrowed(t.form()))
-}
-
-fn head(t: &Token) -> Option<Cow<str>> {
-    t.head().map(|h| h.to_string()).map(Cow::Owned)
-}
-
-fn head_rel(t: &Token) -> Option<Cow<str>> {
-    t.head_rel().map(Cow::Borrowed)
-}
-
-fn p_head(t: &Token) -> Option<Cow<str>> {
-    t.p_head().map(|h| h.to_string()).map(Cow::Owned)
-}
-
-fn p_head_rel(t: &Token) -> Option<Cow<str>> {
-    t.p_head_rel().map(Cow::Borrowed)
-}
-
-fn lemma(t: &Token) -> Option<Cow<str>> {
-    t.lemma().map(Cow::Borrowed)
-}
-
-fn pos(t: &Token) -> Option<Cow<str>> {
-    t.pos().map(Cow::Borrowed)
+pub fn layer_callback(layer: &str) -> Option<LayerCallback> {
+    match layer {
+        "cpos" => Some(Box::new(|t| t.cpos().map(Cow::Borrowed))),
+        "features" => Some(Box::new(|t| {
+            t.features().map(Features::as_str).map(Cow::Borrowed)
+        })),
+        "form" => Some(Box::new(|t| Some(Cow::Borrowed(t.form())))),
+        "head" => Some(Box::new(|t| {
+            t.head().map(|h| h.to_string()).map(Cow::Owned)
+        })),
+        "headrel" => Some(Box::new(|t| t.head_rel().map(Cow::Borrowed))),
+        "phead" => Some(Box::new(|t| {
+            t.p_head().map(|h| h.to_string()).map(Cow::Owned)
+        })),
+        "pheadrel" => Some(Box::new(|t| t.p_head_rel().map(Cow::Borrowed))),
+        "lemma" => Some(Box::new(|t| t.lemma().map(Cow::Borrowed))),
+        "pos" => Some(Box::new(|t| t.pos().map(Cow::Borrowed))),
+        _ => None,
+    }
 }

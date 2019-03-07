@@ -9,7 +9,7 @@ use std::env::args;
 use std::io::{BufWriter, Write};
 use std::process;
 
-use conllx_utils::LAYER_CALLBACKS;
+use conllx_utils::layer_callback;
 use getopts::Options;
 use itertools::Itertools;
 use stdinout::{Input, OrExit, Output};
@@ -46,14 +46,14 @@ fn main() {
     let callback = matches
         .opt_str("l")
         .as_ref()
-        .map(|layer| match LAYER_CALLBACKS.get(layer.as_str()) {
+        .map(|layer| match layer_callback(layer.as_str()) {
             Some(c) => c,
             None => {
                 println!("Unknown layer: {}", layer);
                 process::exit(1)
             }
         })
-        .unwrap_or(&LAYER_CALLBACKS["form"]);
+        .unwrap_or(layer_callback("form").unwrap());
 
     let input = Input::from(matches.free.get(0));
     let reader = conllx::Reader::new(input.buf_read().or_exit("Cannot open input", 1));

@@ -13,7 +13,7 @@ use std::process;
 
 use colored::*;
 use conllx::Token;
-use conllx_utils::{open_reader, or_exit, LayerCallback, LAYER_CALLBACKS};
+use conllx_utils::{layer_callback, open_reader, or_exit, LayerCallback};
 use failure::Error;
 use getopts::Options;
 
@@ -49,8 +49,12 @@ fn main() {
         return;
     }
 
-    let callbacks = process_callbacks(matches.opt_str("l"), vec![&LAYER_CALLBACKS["headrel"]]);
-    let show_callbacks = process_callbacks(matches.opt_str("s"), vec![&LAYER_CALLBACKS["form"]]);
+    let callbacks = process_callbacks(
+        matches.opt_str("l"),
+        vec![layer_callback("headrel").unwrap()],
+    );
+    let show_callbacks =
+        process_callbacks(matches.opt_str("s"), vec![layer_callback("form").unwrap()]);
 
     if matches.free.len() != 2 {
         print_usage(&program, opts);
@@ -70,15 +74,15 @@ fn main() {
 
 fn process_callbacks(
     callback_option: Option<String>,
-    default: Vec<&'static LayerCallback>,
-) -> Vec<&'static LayerCallback> {
+    default: Vec<LayerCallback>,
+) -> Vec<LayerCallback> {
     if callback_option.is_none() {
         return default;
     }
 
     let mut callbacks = Vec::new();
     for layer_str in callback_option.unwrap().split(',') {
-        match LAYER_CALLBACKS.get(layer_str) {
+        match layer_callback(layer_str) {
             Some(c) => callbacks.push(c),
             None => {
                 println!("Unknown layer: {}", layer_str);
@@ -93,8 +97,8 @@ fn process_callbacks(
 fn compare_sentences(
     reader1: conllx::Reader<Box<BufRead>>,
     reader2: conllx::Reader<Box<BufRead>>,
-    diff_callbacks: &[&LayerCallback],
-    show_callbacks: &[&LayerCallback],
+    diff_callbacks: &[LayerCallback],
+    show_callbacks: &[LayerCallback],
 ) -> Result<(), Error> {
     for (sent1, sent2) in reader1.into_iter().zip(reader2.into_iter()) {
         let (sent1, sent2) = (sent1?, sent2?);
@@ -113,8 +117,8 @@ fn compare_sentences(
 fn print_diff(
     tokens1: &[Token],
     tokens2: &[Token],
-    diff_callbacks: &[&LayerCallback],
-    show_callbacks: &[&LayerCallback],
+    diff_callbacks: &[LayerCallback],
+    show_callbacks: &[LayerCallback],
 ) {
     for idx in 0..tokens1.len() {
         let mut columns = Vec::new();
@@ -147,7 +151,7 @@ fn print_diff(
 fn diff_indices(
     tokens1: &[Token],
     tokens2: &[Token],
-    diff_callbacks: &[&LayerCallback],
+    diff_callbacks: &[LayerCallback],
 ) -> Result<BTreeSet<usize>, Error> {
     ensure!(
         tokens1.len() == tokens2.len(),

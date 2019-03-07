@@ -23,7 +23,7 @@ mod graph;
 pub use graph::{first_matching_edge, sentence_to_graph, DependencyGraph, DependencyNode};
 
 mod layer;
-pub use layer::{LayerCallback, LAYER_CALLBACKS};
+pub use layer::{layer_callback, LayerCallback};
 
 mod pp_reattach;
 pub use pp_reattach::reattach_aux_pps;

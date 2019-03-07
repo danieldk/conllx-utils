@@ -10,7 +10,7 @@ use std::io::BufWriter;
 use std::process;
 
 use conllx::{Features, Sentence, WriteSentence};
-use conllx_utils::{or_exit, LayerCallback, LAYER_CALLBACKS};
+use conllx_utils::{layer_callback, or_exit, LayerCallback};
 use getopts::Options;
 use regex::Regex;
 use stdinout::{Input, Output};
@@ -53,14 +53,14 @@ fn main() {
     let callback = matches
         .opt_str("l")
         .as_ref()
-        .map(|layer| match LAYER_CALLBACKS.get(layer.as_str()) {
+        .map(|layer| match layer_callback(layer.as_str()) {
             Some(c) => c,
             None => {
                 println!("Unknown layer: {}", layer);
                 process::exit(1)
             }
         })
-        .unwrap_or(&LAYER_CALLBACKS["form"]);
+        .unwrap_or(layer_callback("form").unwrap());
 
     if matches.free.len() == 0 || matches.free.len() > 3 {
         print_usage(&program, opts);
@@ -76,7 +76,7 @@ fn main() {
     for sentence in reader {
         let mut sentence = or_exit(sentence);
 
-        let matches = match_indexes(&re, callback, &sentence);
+        let matches = match_indexes(&re, &callback, &sentence);
         if matches.is_empty() {
             continue;
         }
