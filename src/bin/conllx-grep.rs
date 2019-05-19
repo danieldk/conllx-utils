@@ -4,12 +4,12 @@ extern crate getopts;
 extern crate regex;
 extern crate stdinout;
 
-use std::collections::{BTreeMap, HashSet};
+use std::collections::HashSet;
 use std::env::args;
 use std::io::BufWriter;
 use std::process;
 
-use conllx::{Features, Sentence, WriteSentence};
+use conllx::{Features, Token, WriteSentence};
 use conllx_utils::{layer_callback, or_exit, LayerCallback};
 use getopts::Options;
 use regex::Regex;
@@ -60,9 +60,9 @@ fn main() {
                 process::exit(1)
             }
         })
-        .unwrap_or(layer_callback("form").unwrap());
+        .unwrap_or_else(|| layer_callback("form").unwrap());
 
-    if matches.free.len() == 0 || matches.free.len() > 3 {
+    if matches.free.is_empty() || matches.free.len() > 3 {
         print_usage(&program, opts);
         return;
     }
@@ -86,7 +86,7 @@ fn main() {
                 let mut features = sentence[idx]
                     .features()
                     .map(|f| f.as_map().clone())
-                    .unwrap_or(BTreeMap::new());
+                    .unwrap_or_default();
                 features.insert(feature.clone(), None);
                 sentence[idx].set_features(Some(Features::from_iter(features)));
             }
@@ -96,7 +96,7 @@ fn main() {
     }
 }
 
-fn match_indexes(re: &Regex, callback: &LayerCallback, sentence: &Sentence) -> HashSet<usize> {
+fn match_indexes(re: &Regex, callback: &LayerCallback, sentence: &[Token]) -> HashSet<usize> {
     let mut indexes = HashSet::new();
 
     for (idx, token) in sentence.iter().enumerate() {

@@ -60,11 +60,7 @@ fn main() {
 
     let mut rng = XorShiftRng::from_seed(seed);
 
-    let sample = reservoir::sample(
-        &mut rng,
-        sample_size,
-        reader.sentences().map(|s| or_exit(s)),
-    );
+    let sample = reservoir::sample(&mut rng, sample_size, reader.sentences().map(or_exit));
 
     for sentence in sample {
         or_exit(writer.write_sentence(&sentence));

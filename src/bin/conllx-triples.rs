@@ -69,7 +69,8 @@ fn main() {
                 head_rel,
                 idx + 1,
                 dep.form()
-            );
+            )
+            .or_exit("Cannot write triple", 1);
         }
     }
 }

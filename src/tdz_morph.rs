@@ -27,7 +27,7 @@ impl fmt::Display for MorphAttribute {
 
 const UNDERSPECIFIED_SHORT: char = '*';
 
-const UNDERSPECIFIED_LONG: &'static str = "underspecified";
+const UNDERSPECIFIED_LONG: &str = "underspecified";
 
 lazy_static! {
     static ref TAG_ATTRIBUTES: HashMap<&'static str, Vec<MorphAttribute>> = hashmap! {

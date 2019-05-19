@@ -21,7 +21,7 @@ fn feature_callback(feature: impl Into<String>) -> Box<Fn(&Token) -> Option<Cow<
         Some(features) => features
             .as_map()
             .get(&feature)
-            .map(|inner| inner.as_ref())
+            .map(Option::as_ref)
             .unwrap_or(None)
             .map(|s| Cow::Borrowed(s.as_str())),
         None => None,
@@ -120,7 +120,7 @@ fn compare_sentences(
             sent2.len()
         );
 
-        'tokenloop: for i in 0..sent1.len() {
+        for i in 0..sent1.len() {
             for layer_callback in diff_callbacks {
                 if layer_callback(&sent1[i]) == layer_callback(&sent2[i]) {
                     correct += 1

@@ -41,7 +41,7 @@ fn main() {
     copy_sents(&mut writer, &matches.free)
 }
 
-fn copy_sents<W>(writer: &mut conllx::Writer<W>, filenames: &Vec<String>)
+fn copy_sents<W>(writer: &mut conllx::Writer<W>, filenames: &[String])
 where
     W: Write,
 {

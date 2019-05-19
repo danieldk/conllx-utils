@@ -53,7 +53,7 @@ fn main() {
                 process::exit(1)
             }
         })
-        .unwrap_or(layer_callback("form").unwrap());
+        .unwrap_or_else(|| layer_callback("form").unwrap());
 
     let input = Input::from(matches.free.get(0));
     let reader = conllx::Reader::new(input.buf_read().or_exit("Cannot open input", 1));
@@ -69,7 +69,9 @@ fn main() {
             "{}",
             sentence
                 .iter()
-                .map(|t| callback(t).map(Cow::into_owned).unwrap_or("_".to_owned()))
+                .map(|t| callback(t)
+                    .map(Cow::into_owned)
+                    .unwrap_or_else(|| "_".to_owned()))
                 .join(" ")
         )
         .or_exit("Cannot write sentence", 1);

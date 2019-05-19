@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use conllx::Sentence;
+use conllx::Token;
 use petgraph::graph::NodeIndex;
 use petgraph::visit::EdgeRef;
 use petgraph::EdgeDirection;
@@ -31,7 +31,7 @@ lazy_static! {
 
 /// Re-attached PPs headed by an auxiliary/model-verb. In the TüBa-D/Z
 /// these are normally topicalized PPs.
-pub fn reattach_aux_pps(sentence: &mut Sentence) {
+pub fn reattach_aux_pps(sentence: &mut [Token]) {
     let updates = find_reattachments(&sentence);
 
     for (prep_offset, new_head) in updates {
@@ -57,7 +57,7 @@ fn resolve_verb(graph: &DependencyGraph, verb: NodeIndex) -> NodeIndex {
 ///
 /// 1. The index into the sentence of a PP requiring re-attachment.
 /// 2. The index into the sentence of the re-attachment site.
-fn find_reattachments(sentence: &Sentence) -> Vec<(usize, usize)> {
+fn find_reattachments(sentence: &[Token]) -> Vec<(usize, usize)> {
     let graph = sentence_to_graph(&sentence, false);
 
     let mut updates = Vec::new();

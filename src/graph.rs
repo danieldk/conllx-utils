@@ -1,4 +1,4 @@
-use conllx::{Sentence, Token};
+use conllx::Token;
 use petgraph::graph::NodeIndex;
 use petgraph::visit::EdgeRef;
 use petgraph::{Directed, EdgeDirection, Graph};
@@ -11,18 +11,13 @@ pub struct DependencyNode<'a> {
 
 pub type DependencyGraph<'a> = Graph<DependencyNode<'a>, Option<&'a str>, Directed>;
 
-pub fn sentence_to_graph(sentence: &Sentence, projective: bool) -> DependencyGraph {
+pub fn sentence_to_graph(sentence: &[Token], projective: bool) -> DependencyGraph {
     let mut g = Graph::new();
 
     let nodes: Vec<_> = sentence
         .iter()
         .enumerate()
-        .map(|(offset, token)| {
-            g.add_node(DependencyNode {
-                token: token,
-                offset: offset,
-            })
-        })
+        .map(|(offset, token)| g.add_node(DependencyNode { token, offset }))
         .collect();
 
     for (idx, token) in sentence.iter().enumerate() {
@@ -62,34 +57,3 @@ where
         .find(|edge_ref| predicate(edge_ref.weight()))
         .map(|edge_ref| edge_ref.target())
 }
-
-/*
-pub fn sentence_to_labeled_graph(sentence: &Sentence) -> Result<Graph<(), String, Directed>> {
-    let mut edges = Vec::with_capacity(sentence.as_tokens().len() + 1);
-    for (idx, token) in sentence.iter().enumerate() {
-        let (head, dependent) = match token.head() {
-            Some(head) => (node_index(head), node_index(idx + 1)),
-            None => continue,
-        };
-
-        let head_rel = match token.head_rel() {
-            Some(head_rel) => head_rel,
-            None => {
-                return Err(
-                    IncompleteGraphError(format!(
-                        "edge from {} to {} does not have a \
-                         label",
-                        head.index(),
-                        dependent.index()
-                    )).into(),
-                )
-            }
-        };
-
-        edges.push((head, dependent, head_rel.to_owned()))
-    }
-
-    Ok(Graph::<(), String, Directed>::from_edges(edges))
-}
-
-*/
