@@ -1,11 +1,7 @@
 use std::collections::HashSet;
 
-use conllx::Token;
-use petgraph::graph::NodeIndex;
-use petgraph::visit::EdgeRef;
-use petgraph::EdgeDirection;
-
-use {first_matching_edge, sentence_to_graph, DependencyGraph};
+use conllx::graph::{DepGraph, DepTriple, Sentence};
+use conllx::token::Token;
 
 macro_rules! ok_or_continue {
     ($expr:expr) => {
@@ -31,23 +27,23 @@ lazy_static! {
 
 /// Re-attached PPs headed by an auxiliary/model-verb. In the TüBa-D/Z
 /// these are normally topicalized PPs.
-pub fn reattach_aux_pps(sentence: &mut [Token]) {
-    let updates = find_reattachments(&sentence);
+pub fn reattach_aux_pps(sentence: &mut Sentence) {
+    let updates = find_reattachments(sentence.dep_graph());
 
-    for (prep_offset, new_head) in updates {
-        sentence[prep_offset].set_head(Some(new_head + 1));
+    for triple in updates {
+        sentence.dep_graph_mut().add_deprel(triple)
     }
 }
 
 /// Given a node `verb` that represents a verb, find the content
 /// (non-auxiliary/model) verb. If the given verb is already a
 /// content verb, the index of the verb itself is returned.
-fn resolve_verb(graph: &DependencyGraph, verb: NodeIndex) -> NodeIndex {
+fn resolve_verb(graph: DepGraph, verb: usize) -> usize {
     // Look for non-aux.
-    match first_matching_edge(graph, verb, EdgeDirection::Outgoing, |e| {
-        *e == Some(AUXILIARY_RELATION)
-    }) {
-        Some(idx) => resolve_verb(graph, idx),
+    match graph.head(verb) {
+        Some(triple) if triple.relation() == Some(AUXILIARY_RELATION) => {
+            resolve_verb(graph, triple.head())
+        }
         None => verb,
     }
 }
@@ -57,34 +53,35 @@ fn resolve_verb(graph: &DependencyGraph, verb: NodeIndex) -> NodeIndex {
 ///
 /// 1. The index into the sentence of a PP requiring re-attachment.
 /// 2. The index into the sentence of the re-attachment site.
-fn find_reattachments(sentence: &[Token]) -> Vec<(usize, usize)> {
-    let graph = sentence_to_graph(&sentence, false);
-
+fn find_reattachments<'a>(dep_graph: DepGraph<'a>) -> Vec<DepTriple<&'a str>> {
     let mut updates = Vec::new();
 
-    for edge_ref in graph.edge_references() {
+    for dependent in 0..dep_graph.len() {
+        // Skip unattached nodes.
+        let triple = ok_or_continue!(dep_graph.head(dependent));
+
         // Skip unlabeled edges.
-        let weight = ok_or_continue!(*edge_ref.weight());
+        let deprel = ok_or_continue!(triple.relation());
 
         // We are only interested in PP/OBJP edges.
-        if !PP_RELATIONS.contains(weight) {
+        if !PP_RELATIONS.contains(deprel) {
             continue;
         }
 
-        let head_node = &graph[edge_ref.source()];
-
         // Check that the head is a verb.
-        let tag = ok_or_continue!(head_node.token.pos());
+        let tag = ok_or_continue!(dep_graph[triple.head()].token().and_then(Token::pos));
         if !tag.starts_with(VERB_PREFIX) {
             continue;
         }
 
-        let content_verb_idx = resolve_verb(&graph, edge_ref.source());
-        if content_verb_idx != edge_ref.source() {
-            let prep_offset = graph[edge_ref.target()].offset;
-            let content_verb_offset = graph[content_verb_idx].offset;
+        let content_verb_idx = resolve_verb(dep_graph, triple.head());
 
-            updates.push((prep_offset, content_verb_offset));
+        if content_verb_idx != triple.head() {
+            updates.push(DepTriple::new(
+                content_verb_idx,
+                triple.relation(),
+                triple.dependent(),
+            ));
         }
     }
 
@@ -96,7 +93,7 @@ mod tests {
     use std::fs::File;
     use std::io::BufReader;
 
-    use conllx::{ReadSentence, Reader};
+    use conllx::io::{ReadSentence, Reader};
 
     use reattach_aux_pps;
 
