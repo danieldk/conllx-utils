@@ -41,10 +41,10 @@ pub fn reattach_aux_pps(sentence: &mut Sentence) {
 fn resolve_verb(graph: DepGraph, verb: usize) -> usize {
     // Look for non-aux.
     match graph.head(verb) {
-        Some(triple) if triple.relation() == Some(AUXILIARY_RELATION) => {
+        Some(ref triple) if triple.relation() == Some(AUXILIARY_RELATION) => {
             resolve_verb(graph, triple.head())
         }
-        None => verb,
+        _ => verb,
     }
 }
 
