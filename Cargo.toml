@@ -7,4 +7,5 @@ edition = "2018"
 [dependencies]
 clap = "2"
 conllx = "0.11"
+itertools = "0.8"
 stdinout = "0.4"
