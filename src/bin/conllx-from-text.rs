@@ -51,7 +51,7 @@ fn main() {
         }
 
         let mut tokens = Vec::new();
-        for token in trimmed.split(" ") {
+        for token in trimmed.split(' ') {
             tokens.push(conllx::TokenBuilder::new(token).token());
         }
 

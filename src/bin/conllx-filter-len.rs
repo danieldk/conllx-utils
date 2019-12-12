@@ -48,7 +48,7 @@ fn main() {
         output.write().or_exit("Cannot open output for writing", 1),
     ));
     for sentence in reader {
-        let mut sentence = sentence.or_exit("Cannot read sentence", 1);
+        let sentence = sentence.or_exit("Cannot read sentence", 1);
 
         if sentence.len() <= max_len {
             writer

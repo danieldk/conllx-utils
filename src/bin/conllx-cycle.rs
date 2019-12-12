@@ -48,6 +48,7 @@ fn main() {
     }
 }
 
+#[allow(clippy::ptr_arg)]
 fn check_cycles(sentence: &Sentence, projective: bool) {
     let edges = sentence.iter().enumerate().filter_map(|(idx, token)| {
         let head = if projective {

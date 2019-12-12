@@ -14,7 +14,7 @@ use conllx_utils::{layer_callback, open_reader, or_exit, LayerCallback};
 use failure::Error;
 use getopts::Options;
 
-fn feature_callback(feature: impl Into<String>) -> Box<Fn(&Token) -> Option<Cow<str>>> {
+fn feature_callback(feature: impl Into<String>) -> Box<dyn Fn(&Token) -> Option<Cow<str>>> {
     let feature = feature.into();
 
     Box::new(move |token| match token.features() {
@@ -103,8 +103,8 @@ fn process_callbacks(
 }
 
 fn compare_sentences(
-    reader1: conllx::Reader<Box<BufRead>>,
-    reader2: conllx::Reader<Box<BufRead>>,
+    reader1: conllx::Reader<impl BufRead>,
+    reader2: conllx::Reader<impl BufRead>,
     diff_callbacks: &[LayerCallback],
 ) -> Result<(usize, usize), Error> {
     let mut total = 0;

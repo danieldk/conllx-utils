@@ -12,12 +12,12 @@ use flate2::read::GzDecoder;
 use flate2::write::GzEncoder;
 use flate2::Compression;
 
-pub fn create_writer<P>(filename: P, gzip: bool) -> io::Result<conllx::Writer<Box<Write>>>
+pub fn create_writer<P>(filename: P, gzip: bool) -> io::Result<conllx::Writer<Box<dyn Write>>>
 where
     P: AsRef<Path>,
 {
     let file = File::create(filename)?;
-    let boxed_writer: Box<Write> = if gzip {
+    let boxed_writer: Box<dyn Write> = if gzip {
         Box::new(BufWriter::new(GzEncoder::new(file, Compression::Default)))
     } else {
         Box::new(BufWriter::new(file))
@@ -26,7 +26,7 @@ where
     Ok(conllx::Writer::new(boxed_writer))
 }
 
-pub fn open_writer<P>(path: &P) -> io::Result<conllx::Writer<Box<Write>>>
+pub fn open_writer<P>(path: &P) -> io::Result<conllx::Writer<Box<dyn Write>>>
 where
     P: AsRef<Path>,
 {
@@ -34,13 +34,13 @@ where
     create_writer(path, compress)
 }
 
-pub fn open_reader<P>(path: &P) -> io::Result<conllx::Reader<Box<BufRead>>>
+pub fn open_reader<P>(path: &P) -> io::Result<conllx::Reader<Box<dyn BufRead>>>
 where
     P: AsRef<Path>,
 {
     let reader = File::open(path)?;
 
-    let boxed_reader: Box<BufRead> = if path.as_ref().extension() == Some(OsStr::new("gz")) {
+    let boxed_reader: Box<dyn BufRead> = if path.as_ref().extension() == Some(OsStr::new("gz")) {
         Box::new(BufReader::new(GzDecoder::new(reader)?))
     } else {
         Box::new(BufReader::new(reader))

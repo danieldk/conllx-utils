@@ -16,9 +16,9 @@ macro_rules! ok_or_continue {
     };
 }
 
-static AUXILIARY_RELATION: &'static str = "AUX";
-static PP_RELATION: &'static str = "PP";
-static POBJ_RELATION: &'static str = "OBJP";
+static AUXILIARY_RELATION: &str = "AUX";
+static PP_RELATION: &str = "PP";
+static POBJ_RELATION: &str = "OBJP";
 
 const VERB_PREFIX: char = 'V';
 

@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use conllx::{Features, Token};
 
-pub type LayerCallback = Box<Fn(&Token) -> Option<Cow<str>>>;
+pub type LayerCallback = Box<dyn Fn(&Token) -> Option<Cow<str>>>;
 
 pub fn layer_callback(layer: &str) -> Option<LayerCallback> {
     match layer {

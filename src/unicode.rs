@@ -10,7 +10,7 @@ pub enum Normalization {
     NFKC,
 }
 
-fn normalization_iter<'a, I>(iter: I, norm: Normalization) -> Box<Iterator<Item = char> + 'a>
+fn normalization_iter<'a, I>(iter: I, norm: Normalization) -> Box<dyn Iterator<Item = char> + 'a>
 where
     I: 'a + Iterator<Item = char>,
 {

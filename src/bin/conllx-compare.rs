@@ -95,8 +95,8 @@ fn process_callbacks(
 }
 
 fn compare_sentences(
-    reader1: conllx::Reader<Box<BufRead>>,
-    reader2: conllx::Reader<Box<BufRead>>,
+    reader1: conllx::Reader<impl BufRead>,
+    reader2: conllx::Reader<impl BufRead>,
     diff_callbacks: &[LayerCallback],
     show_callbacks: &[LayerCallback],
 ) -> Result<(), Error> {
