@@ -1,51 +1,72 @@
-use std::env::args;
-use std::io::{BufWriter, Write};
+use std::io::BufWriter;
 
-use conllx::WriteSentence;
-use conllx_utils::{open_reader, or_exit};
-use getopts::Options;
-use stdinout::Output;
+use clap::{App, AppSettings, Arg};
+use conllx_ng::io::{WriteSentence, Writer};
+use conllx_utils::io::open_reader;
+use stdinout::{OrExit, Output};
 
-fn print_usage(program: &str, opts: Options) {
-    let brief = format!("Usage: {} [options] FILE...", program);
-    print!("{}", opts.usage(&brief));
+static DEFAULT_CLAP_SETTINGS: &[AppSettings] = &[
+    AppSettings::DontCollapseArgsInUsage,
+    AppSettings::UnifiedHelpMessage,
+];
+
+static INPUTS: &str = "INPUTS";
+static OUTPUT: &str = "OUTPUT";
+
+pub struct MergeApp {
+    inputs: Vec<String>,
+    output: Option<String>,
+}
+
+impl MergeApp {
+    fn new() -> Self {
+        let matches = App::new("conllx-from-text")
+            .settings(DEFAULT_CLAP_SETTINGS)
+            .arg(
+                Arg::with_name(INPUTS)
+                    .help("Input corpora")
+                    .required(true)
+                    .min_values(1),
+            )
+            .arg(
+                Arg::with_name(OUTPUT)
+                    .short("w")
+                    .takes_value(true)
+                    .help("Write merged corpus to a file"),
+            )
+            .get_matches();
+
+        let inputs = matches
+            .values_of(INPUTS)
+            .unwrap()
+            .map(ToOwned::to_owned)
+            .collect();
+        let output = matches.value_of(OUTPUT).map(ToOwned::to_owned);
+
+        MergeApp { inputs, output }
+    }
 }
 
 fn main() {
-    let args: Vec<String> = args().collect();
-    let program = args[0].clone();
+    let app = MergeApp::new();
 
-    let mut opts = Options::new();
-    opts.optflag("h", "help", "print this help menu");
-    opts.optopt("w", "", "write to file", "NAME");
-    let matches = or_exit(opts.parse(&args[1..]));
+    let output = Output::from(app.output);
+    let mut writer = Writer::new(BufWriter::new(
+        output.write().or_exit("Cannot open output for writing", 1),
+    ));
 
-    if matches.opt_present("h") {
-        print_usage(&program, opts);
-        return;
-    }
-
-    if matches.free.is_empty() {
-        print_usage(&program, opts);
-        return;
-    }
-
-    let output = Output::from(matches.opt_str("w").as_ref());
-    let mut writer = conllx::Writer::new(BufWriter::new(or_exit(output.write())));
-
-    copy_sents(&mut writer, &matches.free)
+    copy_sents(&mut writer, &app.inputs)
 }
 
-fn copy_sents<W>(writer: &mut conllx::Writer<W>, filenames: &[String])
-where
-    W: Write,
-{
+fn copy_sents(writer: &mut impl WriteSentence, filenames: &[String]) {
     for filename in filenames {
-        let reader = or_exit(open_reader(&filename));
+        let reader = open_reader(&filename).or_exit("Cannot open file for reading", 1);
 
         for sentence in reader {
-            let sentence = or_exit(sentence);
-            or_exit(writer.write_sentence(&sentence))
+            let sentence = sentence.or_exit("Cannot read sentence", 1);
+            writer
+                .write_sentence(&sentence)
+                .or_exit("Cannot write sentence", 1);
         }
     }
 }
