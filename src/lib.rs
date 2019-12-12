@@ -11,9 +11,6 @@ pub use crate::layer::{layer_callback, LayerCallback};
 
 pub mod layer_ng;
 
-mod pp_reattach;
-pub use crate::pp_reattach::reattach_aux_pps;
-
 mod tdz_morph;
 pub use crate::tdz_morph::{expand_tdz_morph, MorphError};
 
