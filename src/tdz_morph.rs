@@ -1,6 +1,9 @@
-use conllx::{Features, Token};
 use std::collections::HashMap;
 use std::fmt;
+
+use conllx::{Features, Token};
+use lazy_static::lazy_static;
+use maplit::hashmap;
 
 #[derive(Debug, Hash, Eq, PartialEq)]
 enum MorphAttribute {
@@ -13,7 +16,7 @@ enum MorphAttribute {
 }
 
 impl fmt::Display for MorphAttribute {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             MorphAttribute::Case => f.write_str("case"),
             MorphAttribute::Gender => f.write_str("gender"),
@@ -105,7 +108,7 @@ pub enum MorphError {
 }
 
 impl fmt::Display for MorphError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
             MorphError::IncorrectLength => f.write_str("Incorrect morphology features length"),
             MorphError::IncorrectChar(p, c) => {

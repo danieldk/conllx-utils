@@ -1,8 +1,3 @@
-extern crate conllx;
-extern crate conllx_utils;
-extern crate getopts;
-extern crate stdinout;
-
 use std::env::args;
 use std::io::BufWriter;
 

@@ -1,9 +1,3 @@
-extern crate conllx;
-extern crate conllx_utils;
-extern crate getopts;
-extern crate regex;
-extern crate stdinout;
-
 use std::collections::HashSet;
 use std::env::args;
 use std::io::BufWriter;

@@ -1,9 +1,3 @@
-extern crate conllx;
-extern crate conllx_utils;
-#[macro_use]
-extern crate failure;
-extern crate getopts;
-
 use std::borrow::Cow;
 use std::env::args;
 use std::io::BufRead;
@@ -11,10 +5,10 @@ use std::process;
 
 use conllx::Token;
 use conllx_utils::{layer_callback, open_reader, or_exit, LayerCallback};
-use failure::Error;
+use failure::{ensure, Error};
 use getopts::Options;
 
-fn feature_callback(feature: impl Into<String>) -> Box<dyn Fn(&Token) -> Option<Cow<str>>> {
+fn feature_callback(feature: impl Into<String>) -> Box<dyn Fn(&Token) -> Option<Cow<'_, str>>> {
     let feature = feature.into();
 
     Box::new(move |token| match token.features() {

@@ -1,10 +1,3 @@
-extern crate colored;
-extern crate conllx;
-extern crate conllx_utils;
-#[macro_use]
-extern crate failure;
-extern crate getopts;
-
 use std::borrow::Cow;
 use std::collections::BTreeSet;
 use std::env::args;
@@ -14,7 +7,7 @@ use std::process;
 use colored::*;
 use conllx::Token;
 use conllx_utils::{layer_callback, open_reader, or_exit, LayerCallback};
-use failure::Error;
+use failure::{ensure, Error};
 use getopts::Options;
 
 fn print_usage(program: &str, opts: Options) {

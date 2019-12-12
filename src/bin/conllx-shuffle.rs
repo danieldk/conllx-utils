@@ -1,15 +1,10 @@
-extern crate conllx;
-extern crate conllx_utils;
-extern crate getopts;
-extern crate rand;
-extern crate stdinout;
-
 use std::env::args;
 use std::io::BufWriter;
 
 use conllx::WriteSentence;
 use conllx_utils::or_exit;
 use getopts::Options;
+use rand;
 use rand::{Rng, SeedableRng, XorShiftRng};
 use stdinout::{Input, OrExit, Output};
 

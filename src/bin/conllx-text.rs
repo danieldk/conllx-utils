@@ -1,9 +1,3 @@
-extern crate conllx;
-extern crate conllx_utils;
-extern crate getopts;
-extern crate itertools;
-extern crate stdinout;
-
 use std::borrow::Cow;
 use std::env::args;
 use std::io::{BufWriter, Write};

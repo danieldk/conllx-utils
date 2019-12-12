@@ -11,7 +11,7 @@ pub struct DependencyNode<'a> {
 
 pub type DependencyGraph<'a> = Graph<DependencyNode<'a>, Option<&'a str>, Directed>;
 
-pub fn sentence_to_graph(sentence: &[Token], projective: bool) -> DependencyGraph {
+pub fn sentence_to_graph(sentence: &[Token], projective: bool) -> DependencyGraph<'_> {
     let mut g = Graph::new();
 
     let nodes: Vec<_> = sentence
@@ -44,7 +44,7 @@ pub fn sentence_to_graph(sentence: &[Token], projective: bool) -> DependencyGrap
 }
 
 pub fn first_matching_edge<F>(
-    graph: &DependencyGraph,
+    graph: &DependencyGraph<'_>,
     index: NodeIndex,
     direction: EdgeDirection,
     predicate: F,

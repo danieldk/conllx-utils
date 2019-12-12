@@ -1,5 +1,3 @@
-extern crate conllx;
-
 use std::ffi::OsStr;
 use std::fmt;
 use std::fs::File;

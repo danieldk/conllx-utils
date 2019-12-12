@@ -1,11 +1,13 @@
 use std::collections::HashSet;
 
 use conllx::Token;
+use lazy_static::lazy_static;
+use maplit::hashset;
 use petgraph::graph::NodeIndex;
 use petgraph::visit::EdgeRef;
 use petgraph::EdgeDirection;
 
-use {first_matching_edge, sentence_to_graph, DependencyGraph};
+use crate::{first_matching_edge, sentence_to_graph, DependencyGraph};
 
 macro_rules! ok_or_continue {
     ($expr:expr) => {
@@ -42,7 +44,7 @@ pub fn reattach_aux_pps(sentence: &mut [Token]) {
 /// Given a node `verb` that represents a verb, find the content
 /// (non-auxiliary/model) verb. If the given verb is already a
 /// content verb, the index of the verb itself is returned.
-fn resolve_verb(graph: &DependencyGraph, verb: NodeIndex) -> NodeIndex {
+fn resolve_verb(graph: &DependencyGraph<'_>, verb: NodeIndex) -> NodeIndex {
     // Look for non-aux.
     match first_matching_edge(graph, verb, EdgeDirection::Outgoing, |e| {
         *e == Some(AUXILIARY_RELATION)
@@ -98,7 +100,7 @@ mod tests {
 
     use conllx::{ReadSentence, Reader};
 
-    use reattach_aux_pps;
+    use crate::reattach_aux_pps;
 
     static ORIGINAL_DATA: &'static str = "testdata/tdz-100.conll";
     static GOLD_REATTACHMENT_DATA: &'static str = "testdata/tdz-100-pp-reattach.conll";

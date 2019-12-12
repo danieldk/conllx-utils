@@ -1,10 +1,3 @@
-extern crate conllx;
-extern crate conllx_utils;
-extern crate getopts;
-extern crate itertools;
-extern crate petgraph;
-extern crate stdinout;
-
 use std::env::args;
 
 use conllx::{DisplaySentence, Sentence};
