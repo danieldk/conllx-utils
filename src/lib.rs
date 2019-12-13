@@ -11,8 +11,5 @@ pub use crate::layer::{layer_callback, LayerCallback};
 
 pub mod layer_ng;
 
-mod tdz_morph;
-pub use crate::tdz_morph::{expand_tdz_morph, MorphError};
-
 mod unicode;
 pub use crate::unicode::{simplify_unicode, simplify_unicode_punct, Normalization};
