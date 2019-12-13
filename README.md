@@ -9,7 +9,6 @@ files. The package contains the following programs:
   by ASCII equivalents.
 * conllx-compare: compare sentences on particular columns.
 * conllx-cycle: find dependency trees with (non-self) cycles.
-* conllx-tdz-expandmorph: expand morphology features in TüBa-D/Z.
 * conllx-grep: print sentences that have a token matching a pattern.
 * conllx-merge: merge CoNLL-X files.
 * conllx-partition: partition a CoNLL-X file in N files.
@@ -21,6 +20,12 @@ files. The package contains the following programs:
 
 Downloads are available on the [release
 page](https://github.com/danieldk/conllx-utils/releases).
+
+## Recent changes
+
+* `conllx-tdz-expandmorph` has moved to the
+  [TüBa-D/DP](https://github.com/sfb833-a3/tueba-ddp/tree/master/tools/general)
+  tools, since it is corpus-specific.
 
 ## Usage
 
